@@ -73,7 +73,7 @@
 			loadScript('http://www.google-analytics.com/u/ga_debug.js');
 		}
 
-		window.jQuery || loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js');
+		window.jQuery || loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js');
 
 	})();
 
