@@ -2,6 +2,27 @@
 
 The easy GA event tracker that's hard to say.
 
+## Use
+
+Add the trackiffer script to the end of your page's body tag. Then, run some code like this:
+
+	<script type="text/javascript">
+		trackiffer({
+			'a' : ['Link', 'Social', '#TEXT#'],
+			'.social a' : ['Outbound', 'Social', '#TEXT#'],
+			'#twitter a' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #TEXT#']
+		});
+	</script>
+	
+Links that match the selectors on the left will be tracked with the events on the right. Any #TEXT# tokens will be replaced by the actual link's text.
+
+You definitely want to run Trackiffer in debug mode to test this all out. It's simple:  
+
+	trackiffer(true);
+
+Debug mode will cancel all tracked clicks (so you stay on the current page) and log your events in the console. Happy tracking!
+	
 ## Bookmarklet
 
-Want to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='http://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();">Trackiffer</a>
+Once you download Trackiffer, you can install the bookmarklet from the index page. This will drop trackiffer onto any page you view, and you can execute trackiffer(true) and trackiffer({rules}) from your browser's console.
+
