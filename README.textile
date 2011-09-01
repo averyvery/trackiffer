@@ -1,7 +1,0 @@
-h1. Trackiffer
-
-The easy GA event tracker that's hard to say.
-
-h2. Bookmarklet
-
-notextile.. <p><strong>Want</strong> to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='http://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();">Trackiffer</a></p>
