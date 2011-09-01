@@ -78,21 +78,3 @@
 	})();
 
 /* @end */
-
-/* @group settings - go there */
-
-	/*
-
-	  // Debug mode - when set, all clicks will be cancelled, and no events will be sent back to GA
-		trackiffer(true);
-
-	  // Rules - selectors on the left, events on the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
-		trackiffer({
-			'a' : ['Link', 'Social', '#TEXT#'],
-			'.social a' : ['Outbound', 'Social', '#TEXT#'],
-			'#twitter a' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #TEXT#']
-		});
-
-	*/
-
-/* @end */

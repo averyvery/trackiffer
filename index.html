@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Trackiffer.</title>
+	</head>
+	<body title="Trackiffer's Body">
+	
+		<a href="/">Internal link!</a>
+		<a href="http://example.com">External link to example.com</a>
+		<form action="http://example.com">
+			External form - coming soon!
+			<button type="submit">Submit</button>
+		</form>
+
+		<script type="text/javascript" src="trackiffer.js"></script>
+		<script type="text/javascript">
+
+			// Debug mode - when set, all clicks will be cancelled, and no events will be sent back to GA
+			trackiffer(true);
+
+			// Rules - selectors on the left, events on the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
+			trackiffer({
+				'a' : ['Link', 'Social', '#TEXT#'],
+				'.social a' : ['Outbound', 'Social', '#TEXT#'],
+				'#twitter a' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #TEXT#']
+			});
+
+		</script>
+
+	</body>
+</html>
+

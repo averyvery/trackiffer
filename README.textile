@@ -1,3 +1,7 @@
 h1. Trackiffer
 
 The easy GA event tracker that's hard to say.
+
+h2. Bookmarklet
+
+Want to test trackiffer out on a page? Drag this link to you toolbar: "Trackiffer":javascript:(function(){document.body.appendChild(document.createElement('script')).src='';})();
