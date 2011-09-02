@@ -123,17 +123,18 @@
 		return event_data;
 	}
 
-	function delayAction(event, event_type, $elem){
+	function delayAction(event, event_type, $elem, handler){
 		event.preventDefault();
 		event.stopImmediatePropagation();
 		var repeat_action = function(){
 			log('Firing delayed action!');
 			if(debug_mode !== true){
-				$elem.trigger(event);
+				$elem.trigger(event_type);
 			}
 		}
-		$elem.unbind(event + '.trackiffer');
-		setTimeout(repeat_action, 100);
+		$elem.unbind(event_type + '.trackiffer', handler);
+		$elem.click();
+		setTimeout(repeat_action, 1000);
 	}
 
 	function getEventType($elem){
@@ -160,11 +161,7 @@
 				var stored_event_data = formatData(event_data.slice(0), $elem),
 					is_outbound = isDestinationOutbound($elem);
 				_gaq.push(stored_event_data);
-				if (is_outbound){
-					log('Delaying outbound action...');
-					event.stopImmediatePropagation();
-					delayAction(event, event_type, $elem);
-				} else if(debug_mode){
+				if(debug_mode){
 					return false;
 				}
 			};
