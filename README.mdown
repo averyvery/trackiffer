@@ -1,9 +1,5 @@
 # Trackiffer
 
-The easy GA event tracker that's hard to say.
-
-## What does it do?
-
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking GA events.
 
 It takes a simple set of CSS selectors and tracking rules, and tracks a wide variety of elements in a number of really cool ways.
