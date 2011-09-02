@@ -9,7 +9,7 @@
 (function(){
 
 	var public = {},
-		version = 0.1,
+		version = '0.1.1',
 		debug_mode = false,
 		jquery_loaded = false,
 		event_types = {
@@ -123,17 +123,23 @@
 		return event_data;
 	}
 
-	function delayAction(event, event_type, $elem, handler){
+	function executeDelayedAction(event_type, $elem){
+		log('Firing delayed ' + event_type + 'action!');
+		if(debug_mode !== true){
+			$elem.trigger(event_type);
+			if(event_type === 'click'){
+				window.location = $elem[0].href;
+			}
+		}
+	};
+
+	function delayAction(event, event_type, $elem){
 		event.preventDefault();
 		event.stopImmediatePropagation();
 		var repeat_action = function(){
-			log('Firing delayed action!');
-			if(debug_mode !== true){
-				$elem.trigger(event_type);
-			}
+			executeDelayedAction(event_type, $elem);
 		}
-		$elem.unbind(event_type + '.trackiffer', handler);
-		$elem.click();
+		$elem.unbind(event_type + '.trackiffer');
 		setTimeout(repeat_action, 1000);
 	}
 
@@ -161,7 +167,10 @@
 				var stored_event_data = formatData(event_data.slice(0), $elem),
 					is_outbound = isDestinationOutbound($elem);
 				_gaq.push(stored_event_data);
-				if(debug_mode){
+				if (is_outbound){
+					log('Delaying outbound action...');
+					delayAction(event, event_type, $elem, handler);
+				} else if(debug_mode){
 					return false;
 				}
 			};
@@ -177,6 +186,10 @@
 		_gat = undefined;
 		_gaq = [['_setAccount', 'UA-11111111-1']];
 		loadScript('http://www.google-analytics.com/u/ga_debug.js');
+	}
+
+	public.undebug = function(){
+		debug_mode = false;
 	}
 
 	public.version = function(){

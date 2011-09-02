@@ -10,9 +10,6 @@ So what does it handle for you?
 - Provides a super-helpful debug mode you can use for setting up your events.
 - Loads from a bookmarklet, so you can even test your rules out on sites you don't have access to yet.
 - Loading jQuery. Trackiffer depends on jQuery, but if you _must_ deploy it on a site without jQuery, Trackiffer will load it for you.
-
-What will it do in the near future?
-
 - Delay outbound links AND form submissions by 100ms to maximize your chances of tracking the event.
 
 ## When would you use Trackiffer?
