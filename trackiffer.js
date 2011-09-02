@@ -98,6 +98,10 @@
 		}
 	}
 
+	function capitaliseFirstLetter(value) {
+		return value.charAt(0).toUpperCase() + value.slice(1);
+	}
+
 	function parseTokens(event_data, $elem){
 		for(var i = 0, length = event_data.length; i < length; i++){
 			var value = event_data[i];
@@ -113,6 +117,7 @@
 					value = value.replace(pattern, replacement);
 				}
 			}
+			value = capitaliseFirstLetter(value);
 			event_data[i] = value;
 		}
 		return event_data;

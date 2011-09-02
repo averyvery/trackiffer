@@ -2,27 +2,57 @@
 
 The easy GA event tracker that's hard to say.
 
+## What does it do?
+
+Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking GA events.
+
+It takes a simple set of CSS selectors and tracking rules, and tracks a wide variety of elements in a number of really cool ways.
+
+So what does it handle for you? 
+
+- Loading jQuery. Trackiffer depends on jQuery, but don't worry about loading it yourself. Trackiffer's got it.
+- Tracking events on links/checkboxes/buttons (click), forms (submit), select elements (change), even text inputs (blur).
+- Delays outbound links AND form submissions by 100ms to maximize your chances of tracking the event.
+- Provides a super-helpful debug mode you can use for setting up your events.
+- Can be loaded from a bookmarklet, so you can even test your rules out on sites you don't have access to.
+
+## When would you use Trackiffer?
+
+Whenever you want to track particular events and don't want to spend a few hours testing and scripting it all. 
+Viget marketing people are aces - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
+That way, we can actually provide hard data to clients about how our improvements counted.
+
 ## Use
 
-Add the trackiffer script to the end of your page's body tag. Then, run some code like this:
+Add the trackiffer script to the end of your page's body tag. Then, add some code like this:
 
 	<script type="text/javascript">
 		trackiffer({
 			'a' : ['Link', 'Social', '#TEXT#'],
-			'.social a' : ['Outbound', 'Social', '#TEXT#'],
-			'#twitter a' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #TEXT#']
+			'select' : ['Outbound', 'Social', '#VALUE#'],
+			'.comment_form' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
+			'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.siblings("h2").text()}]
 		});
 	</script>
 	
-Links that match the selectors on the left will be tracked with the events on the right. Any #TEXT# tokens will be replaced by the actual link's text.
+Any #TOKEN# will be replaced at the time of event:
+
+- #TEXT# by the result of $element.text();
+- #VALUE# by the result of $element.val();
+- #ANYTHING_ELSE by the result of $element.attr('anything_else');
+
+## Debug mode
 
 You definitely want to run Trackiffer in debug mode to test this all out. It's simple:  
 
-	trackiffer(true);
+	trackiffer('debug');
 
-Debug mode will cancel all tracked clicks (so you stay on the current page) and log your events in the console. Happy tracking!
+Debug mode will cancel all tracked clicks (so you stay on the current page) and log tons of cool info in the console.
 	
 ## Bookmarklet
 
-Once you download Trackiffer, you can install the bookmarklet from the index page. This will drop trackiffer onto any page you view, and you can execute trackiffer(true) and trackiffer({rules}) from your browser's console.
+Once you download Trackiffer, you can install the bookmarklet from the index.html page. This will drop trackiffer onto any page you view, and you can execute trackiffer('debug') and trackiffer({rules}) from your browser's console.
 
+## Thanks To
+
+[Paul Koch]:(http://www.viget.com/about/team/pkoch/) for being such a GA badass and always asking us to do cool stuff with analytics.
