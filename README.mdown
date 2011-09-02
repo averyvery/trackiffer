@@ -31,7 +31,7 @@ Add the trackiffer script to the end of your page's body tag. Then, add some cod
 			'a' : ['Link', 'Social', '#TEXT#'],
 			'select' : ['Outbound', 'Social', '#VALUE#'],
 			'.comment_form' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
-			'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.siblings("h2").text()}]
+			'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
 		});
 	</script>
 	
@@ -40,6 +40,9 @@ Any #TOKEN# will be replaced at the time of event:
 - #TEXT# by the result of $element.text();
 - #VALUE# by the result of $element.val();
 - #ANYTHING_ELSE by the result of $element.attr('anything_else');
+
+In extreme cases, you can just pass it callbacks instead of strings. This lets you do all kinds of fancy stuff - 
+in the example, we're recording the value of a particular input at the moment the form submits.
 
 ## Debug mode
 
