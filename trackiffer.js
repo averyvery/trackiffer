@@ -75,7 +75,7 @@
 
 	function formatData(event_data, $elem){
 		event_data = parseTokens(event_data, $elem);
-		log('Tracking', event_data);
+		log('TRACKING!', event_data);
 		event_data.unshift('_trackEvent');
 		return event_data;
 	}
