@@ -58,4 +58,4 @@ Once you download Trackiffer, you can install the bookmarklet from the index.htm
 
 ## Thanks To
 
-[Paul Koch]:(http://www.viget.com/about/team/pkoch/) for being such a GA badass and always asking us to do cool stuff with analytics.
+[Paul Koch](http://www.viget.com/about/team/pkoch/) for being such a GA badass and always asking us to do cool stuff with analytics.
