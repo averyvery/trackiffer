@@ -1,31 +1,75 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Trackiffer.</title>
+		<title>Trackiffer - Easy GA Event tracking</title>
+		<link rel="stylesheet" type="text/css" href="jasmine/jasmine.css">
+		<style type="text/css">
+			body {
+				color: #444;
+				font-family: sans-serif;
+				font-size: 18px;
+				line-height: 1.5;
+				margin: 60px;
+			}
+		</style>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
+		<script type="text/javascript">
+			_gaq = [['_setAccount', 'UA-11111111-1']];
+		</script>
+		<script type="text/javascript" src="jasmine/jasmine.js"></script>
+		<script type="text/javascript" src="jasmine/jasmine-html.js"></script>
+		<script type="text/javascript" src="tests.js"></script>
+
 	</head>
 	<body title="Trackiffer's Body">
 	
 		<p>Want to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='http://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();">Trackiffer</a></p>
-		<a href="/">Internal link!</a>
-		<!--
-		<a href="http://example.com">External link to example.com</a>
-		<form action="http://example.com">
-			External form - coming soon!
+		<p><a class="internal_link" href="/">Internal link</a></p>
+		
+		<form action="/" class="internal_form" method="get">
+			<h2>Internal Form</h2>
+			<input type="text" />
+			<button type="submit">Submit Internal Form</button>
+		</form>
+
+		<hr />
+
+		<p><a href="http://example.com" class="outbound_link">Outbound link</a></p>
+		<form action="http://example.com" class="outbound_form" method="get">
+			<h2>Outbound Form</h2>
 			<button type="submit">Submit</button>
 		</form>
-		-->
+
+		<hr />
+
+		<select name="Select name">
+			<option value="1">Select item one</option>
+			<option value="2">Select item two</option>
+			<option value="3">Select item three</option>
+		</select>
+
+		<a class="test">Run the full test suite</a>
 
 		<script type="text/javascript" src="trackiffer.js"></script>
 		<script type="text/javascript">
 
 			// Debug mode - when set, all clicks will be cancelled, and no events will be sent back to GA
-			trackiffer(true);
+			trackiffer('debug');
 
 			// Rules - selectors on the left, events on the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
 			trackiffer({
-				'a' : ['Link', 'Social', '#TEXT#'],
-				'.social a' : ['Outbound', 'Social', '#TEXT#'],
-				'#twitter a' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #TEXT#']
+				'.internal_link' : ['Internal Link', 'Click'],
+				'.internal_form' : ['Internal Form', 'Submit', 'Email Signup'],
+				'.outbound_link' : ['Outbound Link', 'Click', '#TEXT#'],
+				'.outbound_form' : ['Outbound Form', '#METHOD#', function(N){return N.siblings("h2").text()}],
+				'select' : ['Select', '#NAME#', "#VALUE#"],
+				'input[type=text]' : ['Input', 'Type', function(N){return N.val() + ' field'}],
+			});
+
+			jQuery('.outbound_form').submit(function(){
+				console.log('Outbound form successfully submitted!');
+				return false;
 			});
 
 		</script>
