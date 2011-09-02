@@ -127,7 +127,7 @@
 		log('Firing delayed ' + event_type + 'action!');
 		if(debug_mode !== true){
 			$elem.trigger(event_type);
-			if(event_type === 'click'){
+			if(event_type === 'click' && $elem.hasClass('nofollow') === false){
 				window.location = $elem[0].href;
 			}
 		}
