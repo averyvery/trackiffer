@@ -38,7 +38,7 @@
 	}
 
 	function checkjQuery(){
-		var version = window.jQuery && jQuery.fn.jquery || 0;
+		var version = window.jQuery && jQuery.fn.jquery || '0';
 		log('jQuery version: ' + version);
 		version = version.split('.').join('');
 		(parseInt(version) > 160) ? jQueryHasLoaded() : setTimeout(checkjQuery, 100);
