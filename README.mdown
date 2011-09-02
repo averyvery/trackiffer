@@ -18,9 +18,14 @@ So what does it handle for you?
 
 ## When would you use Trackiffer?
 
-Whenever you want to track particular events and don't want to spend a few hours testing and scripting it all. 
+Whenever you want to track particular events and don't want to spend a few hours testing and scripting it all. Trackify simplifies the setup and testing like whoa.
+
+## Why does this exist?
+
 Viget marketing people are aces - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
-That way, we can actually provide hard data to clients about how our improvements counted.
+
+The problem? We do event tracking twice per site, and it's not a very repeatable or simple process....at least, until now. 
+I wanted to make a script that handled all the messy aspects of tracking, and let our GA wizards simply whip up a bunch of rules and deploy.
 
 ## Use
 
