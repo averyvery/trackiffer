@@ -10,11 +10,11 @@ It takes a simple set of CSS selectors and tracking rules, and tracks a wide var
 
 So what does it handle for you? 
 
-- Loading jQuery. Trackiffer depends on jQuery, but don't worry about loading it yourself. Trackiffer's got it.
 - Tracking events on links/checkboxes/buttons (click), forms (submit), select elements (change), even text inputs (blur).
 - Delays outbound links AND form submissions by 100ms to maximize your chances of tracking the event.
 - Provides a super-helpful debug mode you can use for setting up your events.
 - Can be loaded from a bookmarklet, so you can even test your rules out on sites you don't have access to.
+- Loading jQuery. Trackiffer depends on jQuery, but if you _must_ deploy it on a site without jQuery, Trackiffer will load it for you.
 
 ## When would you use Trackiffer?
 
