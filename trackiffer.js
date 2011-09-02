@@ -26,7 +26,7 @@
 	function log(){
 		if(debug_mode){
 			var args = Array.prototype.slice.call(arguments); 
-			args.unshift('TRKFR ---');
+			args.unshift('---');
 			console && console.log && console.log.apply(console, args);
 		}
 	};
@@ -50,7 +50,7 @@
 	}
 
 	function loadScript(src){
-		log('Loading ' + src);
+		log('Script not detected. Loading ' + src);
 		var new_script = document.createElement('script'),
 			first_script = document.getElementsByTagName('script')[0]; 
 		new_script.type = 'text/javascript';
@@ -118,13 +118,16 @@
 	}
 
 	function delayAction(event, event_type, $elem){
+		event.preventDefault();
 		event.stopImmediatePropagation();
 		var repeat_action = function(){
-			$elem.trigger(event);
+			log('Firing delayed action!');
+			if(debug_mode !== true){
+				$elem.trigger(event);
+			}
 		}
 		$elem.unbind(event + '.trackiffer');
-		setTimeout(repeat_action, 3000);
-		return false;
+		setTimeout(repeat_action, 100);
 	}
 
 	function getEventType($elem){
@@ -151,11 +154,12 @@
 				var stored_event_data = formatData(event_data.slice(0), $elem),
 					is_outbound = isDestinationOutbound($elem);
 				_gaq.push(stored_event_data);
-				if(debug_mode){
+				if (is_outbound){
 					log('Delaying outbound action...');
-					return false;
-				} else if (is_outbound){
+					event.stopImmediatePropagation();
 					delayAction(event, event_type, $elem);
+				} else if(debug_mode){
+					return false;
 				}
 			};
 		$elem.bind(event_type + '.trackiffer', handler);
@@ -165,7 +169,8 @@
 	// public methods
 	public.debug = function(){
 		debug_mode = true;
-		log('Debug mode!');
+		log('Trackiffer entering debug mode.');
+		log('Tracked links WILL NOT WORK and WILL NOT TRACK while in debug mode.');
 		_gat = undefined;
 		_gaq = [['_setAccount', 'UA-11111111-1']];
 		loadScript('http://www.google-analytics.com/u/ga_debug.js');
