@@ -14,18 +14,20 @@ So what does it handle for you?
 
 ## When would you use Trackiffer?
 
-Whenever you want to track particular events and don't want to spend a few hours testing and scripting it all. Trackify simplifies the setup and testing like whoa.
+Whenever you want to track particular events and don't want to spend a few hours testing and scripting it all. 
+Trackify simplifies the setup and testing of GA events like whoa.
 
 ## Why does this exist?
 
-Viget marketing people are aces - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
+The Viget marketing people are awesome - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
 
-The problem? We do event tracking twice per site, and it's not a very repeatable or simple process....at least, until now. 
-I wanted to make a script that handled all the messy aspects of tracking, and let our GA wizards simply whip up a bunch of rules and deploy.
+The problem? This means we set up event tracking twice per site, and it's not a very repeatable or simple process....at least, until now. 
+
+I wanted to make a script that handled all the messy aspects of tracking, and enabled our GA wizards simply put together a ruleset and deploy, maybe even without developer help.
 
 ## Use
 
-Add the trackiffer script to the end of your page's body tag. Then, add some code like this:
+Add the trackiffer script to the end of your page's body tag. After that, add some code like this:
 
 	<script type="text/javascript">
 		trackiffer({
@@ -35,14 +37,16 @@ Add the trackiffer script to the end of your page's body tag. Then, add some cod
 			'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
 		});
 	</script>
+
+The left side is the jQuery selector you'd like to use, and the right side is the event data you want to track.
 	
 Any #TOKEN# will be replaced at the time of event:
 
 - #TEXT# by the result of $element.text();
 - #VALUE# by the result of $element.val();
-- #ANYTHING_ELSE by the result of $element.attr('anything_else');
+- #ANYTHING_ELSE# is replaced by the result of $element.attr('anything_else');
 
-In extreme cases, you can just pass it callbacks instead of strings. This lets you do all kinds of fancy stuff - 
+In extreme cases, you can just pass callbacks instead of strings. This lets you do all kinds of fancy stuff - 
 in the example, we're recording the value of a particular input at the moment the form submits.
 
 ## Debug mode
@@ -55,8 +59,9 @@ Debug mode will cancel all tracked clicks (so you stay on the current page) and 
 	
 ## Bookmarklet
 
-Once you download Trackiffer, you can install the bookmarklet from the index.html page. This will drop trackiffer onto any page you view, and you can execute trackiffer('debug') and trackiffer({rules}) from your browser's console.
+Once you download Trackiffer, you can install the bookmarklet from the index.html page. 
+This will drop trackiffer onto any page you view and set debug mode - you can then execute and test trackiffer({rules}) from your browser's console.
 
 ## Thanks To
 
-[Paul Koch](http://www.viget.com/about/team/pkoch/) for being such a GA badass and always asking us to do cool stuff with analytics.
+[Paul Koch](http://www.viget.com/about/team/pkoch/) and the rest of the Viget marketers for being such GA badasses and always asking us to do cool stuff with analytics.
