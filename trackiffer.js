@@ -9,6 +9,7 @@
 (function(){
 
 	var public = {},
+		version 0.1,
 		debug_mode = false,
 		jquery_loaded = false,
 		event_types = {
@@ -174,6 +175,10 @@
 		_gat = undefined;
 		_gaq = [['_setAccount', 'UA-11111111-1']];
 		loadScript('http://www.google-analytics.com/u/ga_debug.js');
+	}
+
+	public.version = function(){
+		return version;
 	}
 
 	window.trackiffer = function(method_or_rules){
