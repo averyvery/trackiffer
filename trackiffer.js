@@ -9,7 +9,7 @@
 (function(){
 
 	var public = {},
-		version 0.1,
+		version = 0.1,
 		debug_mode = false,
 		jquery_loaded = false,
 		event_types = {
