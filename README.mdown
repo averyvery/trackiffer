@@ -14,7 +14,7 @@ So what does it handle for you?
 
 ## When would you use Trackiffer?
 
-Whenever you want to track particular events and don't want to spend a few hours testing and scripting it all. 
+Whenever you want to track particular events and don't want to spend a few hours scripting it.
 Trackify simplifies the setup and testing of GA events like whoa.
 
 ## Why does this exist?
@@ -64,4 +64,4 @@ This will drop trackiffer onto any page you view and set debug mode - you can th
 
 ## Thanks To
 
-[Paul Koch](http://www.viget.com/about/team/pkoch/) and the rest of the Viget marketers for being such GA badasses and always asking us to do cool stuff with analytics.
+[Paul Koch](http://www.viget.com/about/team/pkoch/) and the rest of the Viget marketers for being GA badasses and always asking us to do cool stuff with analytics.
