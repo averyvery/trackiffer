@@ -1,10 +1,17 @@
-/* 
-	trackiffer: easy GA event tracking and debugging
-
-	Edit the tracking rules to create simple click-based event trackers for GA events.
-	At any time, you can visit a page in your browser and paste this code into the console to test.
-	Add this script at the verrrry bottom of a site to start tracking.
-*/ 
+/*
+ * Trackiffer v0.1.1
+ * Easy GA event tracking and debugging
+ * https://github.com/averyvery/trackiffer
+ *
+ * Copyright 2011, Doug Avery
+ * Dual licensed under the MIT and GPL licenses.
+ * Uses the same license as jQuery, see:
+ * http://jquery.org/license
+ *
+ * Edit the tracking rules to create simple click-based event trackers for GA events.
+ * At any time, you can visit a page in your browser and paste this code into the console to test.
+ * Add this script at the verrrry bottom of a site to start tracking.
+ */
 
 (function(){
 
