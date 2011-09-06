@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.1.4
+ * Trackiffer v0.1.5
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -16,7 +16,7 @@
 (function(document, window){
 
 	var public = {},
-		version = '0.1.4',
+		version = '0.1.5',
 		debug_mode = false,
 		debug_css = {
 			'outline' : 'rgba(0,200,200,.35) 3px solid'
@@ -73,7 +73,7 @@
 	}
 
 	function loadScript(src){
-		log('Script not detected. Loading ' + src);
+		log('Loading ' + src);
 		var new_script = document.createElement('script'),
 			first_script = document.getElementsByTagName('script')[0]; 
 		new_script.type = 'text/javascript';
@@ -119,10 +119,6 @@
 		}
 	}
 
-	function capitaliseFirstLetter(value) {
-		return value.charAt(0).toUpperCase() + value.slice(1);
-	}
-
 	function parseTokens(event_data, $elem){
 		for(var i = 0, length = event_data.length; i < length; i++){
 			var value = event_data[i];
@@ -133,12 +129,11 @@
 					match = value.match(pattern),
 					attribute,
 					replacement;
-				replacement = getReplacement(match, $elem);
+				replacement = jQuery.trim(getReplacement(match, $elem));
 				if(replacement){
 					value = value.replace(pattern, replacement);
 				}
 			}
-			value = capitaliseFirstLetter(value);
 			value = replaceBadCharacters(value);
 			event_data[i] = value;
 		}
@@ -153,9 +148,12 @@
 	}
 
 	function executeDelayedAction(event_type, $elem){
+		var elem = $elem.get(0);
 		log('Firing delayed ' + event_type + '!');
 		if(debug_mode !== true){
+			elem.submit();
 			$elem.trigger(event_type);
+			elem.submit && elem.submit();
 			if(event_type === 'click' && $elem.hasClass('nofollow') === false){
 				window.location = $elem[0].href;
 			}
@@ -164,7 +162,6 @@
 
 	function delayAction(event, event_type, $elem){
 		event.preventDefault();
-		event.stopImmediatePropagation();
 		var repeat_action = function(){
 			executeDelayedAction(event_type, $elem);
 		}
@@ -184,7 +181,8 @@
 
 	function isDestinationOutbound($elem){
 		var is_outbound = false,
-			url = $elem.attr('href') || $elem.attr('action') || '',
+			url = $elem.attr('href') || '',
+			// Try it with forms url = $elem.attr('href') || $elem.attr('action') || '',
 			host = location.host !== '' || 'localhost',
 			is_outbound = url.indexOf(host) == -1 && url.match(/^http/i);
 		return !!is_outbound;
