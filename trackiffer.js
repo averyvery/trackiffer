@@ -192,7 +192,7 @@
 	function bindDebugHover(event_data, $elem, selector){
 		var highlight_all = function(){
 			if(debug_mode){
-				log(event_data);
+				log(parseTokens(event_data, $elem));
 				rule_dom_elements[selector].each(highlightElement);
 			}
 		},
