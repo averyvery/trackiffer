@@ -37,7 +37,7 @@
 
 		<hr />
 
-		<p><a href="http://example.com" class="outbound_link">Outbound link 1</a></p>
+		<p><a href="http://example.com" class="outbound_link">Outbound, link, 1</a></p>
 		<p><a href="http://example.com" class="outbound_link">Outbound link 2</a></p>
 		<p><a href="http://example.com" class="outbound_link">Outbound link 3</a></p>
 		<form action="http://example.com" class="outbound_form" method="get">
@@ -60,7 +60,7 @@
 
 			// Rules - selectors on the left, events on the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
 			trackiffer({
-				'.internal_link' : ['Internal Link', 'Click'],
+				'.internal_link' : ['Internal Link', 'Click', '#TEXT#'],
 				'.internal_form' : ['Internal Form', 'Submit', 'Email Signup'],
 				'.outbound_link' : ['Outbound Link', 'Click', '#TEXT#'],
 				'.outbound_form' : ['Outbound Form', '#METHOD#', function(N){return N.siblings("h2").text()}],

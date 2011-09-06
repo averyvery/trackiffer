@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.1.3
+ * Trackiffer v0.1.4
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -16,7 +16,7 @@
 (function(document, window){
 
 	var public = {},
-		version = '0.1.3',
+		version = '0.1.4',
 		debug_mode = false,
 		debug_css = {
 			'outline' : 'rgba(0,200,200,.35) 3px solid'
@@ -139,6 +139,9 @@
 				}
 			}
 			value = capitaliseFirstLetter(value);
+			console && console.log && console.log(value);
+			value = value.replace(/,/g, '\\,');
+			console && console.log && console.log(value);
 			event_data[i] = value;
 		}
 		return event_data;
