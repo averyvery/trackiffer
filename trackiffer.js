@@ -139,12 +139,17 @@
 				}
 			}
 			value = capitaliseFirstLetter(value);
-			console && console.log && console.log(value);
-			value = value.replace(/,/g, '\\,');
-			console && console.log && console.log(value);
+			value = replaceBadCharacters(value);
 			event_data[i] = value;
 		}
 		return event_data;
+	}
+
+	function replaceBadCharacters(string){
+		string = string.replace(/,/g, '\\,');
+		string = string.replace(/"/g, '\\\"');
+		string = string.replace(/'/g, '\\\'');
+		return string;
 	}
 
 	function executeDelayedAction(event_type, $elem){
