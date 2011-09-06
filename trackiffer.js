@@ -19,7 +19,7 @@
 		version = '0.1.3',
 		debug_mode = false,
 		debug_css = {
-			'outline' : 'rgba(0,200,200,.5) 3px solid'
+			'outline' : 'rgba(0,200,200,.35) 3px solid'
 		},
 		debug_highlight_css = {
 			'outline' : 'rgba(250,0,0,.7) 3px solid'
@@ -192,20 +192,16 @@
 
 	function bindDebugHover(event_data, $elem, selector){
 		var highlight_all = function(){
-			if(debug_mode){
-				rule_dom_elements[selector].each(highlightElement);
-			}
+			debug_mode && rule_dom_elements[selector].each(highlightElement);
 		},
 		highlight_none = function(){
-			if(debug_mode){
-				rule_dom_elements[selector].each(unHighlightElement);
-			}
+			debug_mode && rule_dom_elements[selector].each(unHighlightElement);
 		};
 		if(typeof rule_dom_elements[selector] === 'undefined'){
 			rule_dom_elements[selector] = jQuery();
 		}
 		rule_dom_elements[selector] = rule_dom_elements[selector].add($elem);
-		$elem.css(debug_css);
+		debug_mode && $elem.css(debug_css);
 		$elem.hover(highlight_all, highlight_none)
 	}
 
