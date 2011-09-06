@@ -92,7 +92,6 @@
 
 	function formatData(event_data, $elem){
 		event_data = parseTokens(event_data, $elem);
-		log('TRACKING!', event_data);
 		event_data.unshift('_trackEvent');
 		return event_data;
 	}
@@ -192,7 +191,6 @@
 	function bindDebugHover(event_data, $elem, selector){
 		var highlight_all = function(){
 			if(debug_mode){
-				log(event_data);
 				rule_dom_elements[selector].each(highlightElement);
 			}
 		},
