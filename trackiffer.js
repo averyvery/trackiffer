@@ -18,7 +18,9 @@
 	var public = {},
 		version = '0.1.1',
 		debug_mode = false,
+		jquery_version = '0',
 		jquery_loaded = false,
+		rule_dom_elements = {},
 		event_types = {
 			'form' : 'submit',
 			'select' : 'change',
@@ -40,15 +42,22 @@
 	};
 
 	function loadjQuery(){
-		window.jQuery || loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js');
+		isjQueryVersionHighEnough() || loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js');
 		checkjQuery();
 	}
 
+	function isjQueryVersionHighEnough(){
+		version = window.jQuery && jQuery.fn.jquery || '0';
+		log('Checking jQuery version: ' + version);
+		if(parseInt(version) > 160) {
+			log('High enough! Executing');
+		}
+		var version_int = parseInt(version.split('.').join(''));
+		return version_int > 160;
+	}
+
 	function checkjQuery(){
-		var version = window.jQuery && jQuery.fn.jquery || '0';
-		log('jQuery version: ' + version);
-		version = version.split('.').join('');
-		(parseInt(version) > 160) ? jQueryHasLoaded() : setTimeout(checkjQuery, 100);
+		isjQueryVersionHighEnough() ? jQueryHasLoaded() : setTimeout(checkjQuery, 100);
 	}
 
 	function jQueryHasLoaded(){
@@ -70,7 +79,7 @@
 		if(jquery_loaded){
 			for(selector in rules){
 				jQuery(selector).each(function(){
-					bindEvent(rules[selector], $(this));
+					bindEvent(rules[selector], $(this), selector);
 				});
 			};
 		} else {
@@ -168,7 +177,38 @@
 		return !!is_outbound;
 	}
 
-	function bindEvent(event_data, $elem){
+	function highlightElement(){
+		$(this).css({
+			'outline' : 'red 3px solid'
+		});
+	}
+
+	function unHighlightElement(){
+		$(this).css({
+			'outline' : 'none'
+		});
+	}
+
+	function bindDebugHover(event_data, $elem, selector){
+		var highlight_all = function(){
+			if(debug_mode){
+				log(event_data);
+				rule_dom_elements[selector].each(highlightElement);
+			}
+		},
+		highlight_none = function(){
+			if(debug_mode){
+				rule_dom_elements[selector].each(unHighlightElement);
+			}
+		};
+		if(typeof rule_dom_elements[selector] === 'undefined'){
+			rule_dom_elements[selector] = jQuery();
+		}
+		rule_dom_elements[selector] = rule_dom_elements[selector].add($elem);
+		$elem.hover(highlight_all, highlight_none)
+	}
+
+	function bindEvent(event_data, $elem, selector){
 		var event_type = getEventType($elem),
 			handler = function(event){
 				var stored_event_data = formatData(event_data.slice(0), $elem),
@@ -181,6 +221,7 @@
 					return false;
 				}
 			};
+		bindDebugHover(event_data, $elem, selector);
 		$elem.bind(event_type + '.trackiffer', handler);
 
 	}
@@ -211,4 +252,3 @@
 	init();
 
 })();
-
