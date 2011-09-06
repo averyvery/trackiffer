@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.1.1
+ * Trackiffer v0.1.2
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -16,7 +16,7 @@
 (function(){
 
 	var public = {},
-		version = '0.1.1',
+		version = '0.1.2',
 		debug_mode = false,
 		jquery_version = '0',
 		jquery_loaded = false,
