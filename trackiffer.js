@@ -13,7 +13,7 @@
  * Add this script at the verrrry bottom of a site to start tracking.
  */
 
-(function(){
+(function(document, window, jQuery){
 
 	var public = {},
 		version = '0.1.2',
@@ -251,4 +251,4 @@
 	// finalize
 	init();
 
-})();
+})(document, window, jQuery);
