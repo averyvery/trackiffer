@@ -140,7 +140,7 @@
 	}
 
 	function executeDelayedAction(event_type, $elem){
-		log('Firing delayed ' + event_type + 'action!');
+		log('Firing delayed ' + event_type + '!');
 		if(debug_mode !== true){
 			$elem.trigger(event_type);
 			if(event_type === 'click' && $elem.hasClass('nofollow') === false){
@@ -156,7 +156,7 @@
 			executeDelayedAction(event_type, $elem);
 		}
 		$elem.unbind(event_type + '.trackiffer');
-		setTimeout(repeat_action, 1000);
+		setTimeout(repeat_action, 100);
 	}
 
 	function getEventType($elem){
