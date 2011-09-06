@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.1.2
+ * Trackiffer v0.1.3
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -16,8 +16,14 @@
 (function(document, window){
 
 	var public = {},
-		version = '0.1.2',
+		version = '0.1.3',
 		debug_mode = false,
+		debug_css = {
+			'outline' : 'rgba(0,200,200,.5) 3px solid'
+		},
+		debug_highlight_css = {
+			'outline' : 'rgba(250,0,0,.7) 3px solid'
+		},
 		jquery_version = '0',
 		jquery_loaded = false,
 		rule_dom_elements = {},
@@ -177,15 +183,11 @@
 	}
 
 	function highlightElement(){
-		$(this).css({
-			'outline' : 'red 3px solid'
-		});
+		$(this).css(debug_highlight_css);
 	}
 
 	function unHighlightElement(){
-		$(this).css({
-			'outline' : 'none'
-		});
+		$(this).css(debug_css);
 	}
 
 	function bindDebugHover(event_data, $elem, selector){
@@ -203,6 +205,7 @@
 			rule_dom_elements[selector] = jQuery();
 		}
 		rule_dom_elements[selector] = rule_dom_elements[selector].add($elem);
+		$elem.css(debug_css);
 		$elem.hover(highlight_all, highlight_none)
 	}
 
@@ -221,7 +224,6 @@
 			};
 		bindDebugHover(event_data, $elem, selector);
 		$elem.bind(event_type + '.trackiffer', handler);
-
 	}
 
 	// public methods
@@ -230,7 +232,7 @@
 		log('Trackiffer entering debug mode.');
 		log('Tracked links WILL NOT WORK and WILL NOT TRACK while in debug mode.');
 		_gat = undefined;
-		_gaq = [['_setAccount', 'UA-11111111-1']];
+		_gaq = [['_setAccount', 'UA-00000000-1']];
 		loadScript('http://www.google-analytics.com/u/ga_debug.js');
 	}
 

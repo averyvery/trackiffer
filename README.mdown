@@ -1,4 +1,4 @@
-# Trackiffer 0.1.1 
+# Trackiffer 0.1.3 
 
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking GA events.
 
