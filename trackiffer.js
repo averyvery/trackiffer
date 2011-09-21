@@ -268,7 +268,8 @@
 		(typeof method_or_rules === 'object') ? bindRules(method_or_rules) : public[method_or_rules]();
 	}
 
-	// finalize
 	init();
+
+	debug_mode && public.debug();
 
 })(document, window);
