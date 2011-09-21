@@ -11,20 +11,25 @@
  * Edit the tracking rules to create simple click-based event trackers for GA events.
  * At any time, you can visit a page in your browser and paste this code into the console to test.
  * Add this script at the verrrry bottom of a site to start tracking.
+ *
+ * Should be compressed with http://jscompress.com/
  */
 
 (function(document, window){
 
-	var public = {},
-		version = '0.1.5',
-		debug_mode = false,
+	var public = {
+			'version' : function(){
+				return '0.1.6'; 
+			}
+		},
+		debug_mode = document.location.hash === '#trackiffer_debug',
 		debug_css = {
 			'outline' : 'rgba(0,200,200,.35) 3px solid'
 		},
 		debug_highlight_css = {
 			'outline' : 'rgba(250,0,0,.7) 3px solid'
 		},
-		jquery_version = '0',
+		jquery_high_enough = false,
 		jquery_loaded = false,
 		rule_dom_elements = {},
 		event_types = {
@@ -40,10 +45,10 @@
 	}
 
 	function log(){
-		if(debug_mode){
+		if(debug_mode && typeof console === 'object' && console.log){
 			var args = Array.prototype.slice.call(arguments); 
 			args.unshift('---');
-			console && console.log && console.log.apply(console, args);
+			console.log.apply(console, args);
 		}
 	};
 
@@ -52,14 +57,23 @@
 		checkjQuery();
 	}
 
+	function normalizeVersion(version) {
+		var version = version + '';
+		version = version.replace(/\./g, '');
+		while (version.length < 3) {
+			version = version + '0';
+		}
+		return parseInt(version);
+	}
+
 	function isjQueryVersionHighEnough(){
 		version = window.jQuery && jQuery.fn.jquery || '0';
-		log('Checking jQuery version: ' + version);
-		if(parseInt(version) > 160) {
-			log('High enough! Executing');
+		log('Checking jQuery version: ' + version + ' (needs to be 1.4+)');
+		version = normalizeVersion(version);
+		if(version > 140) {
+			jquery_high_enough = true;
 		}
-		var version_int = parseInt(version.split('.').join(''));
-		return version_int > 160;
+		return jquery_high_enough;
 	}
 
 	function checkjQuery(){
@@ -151,7 +165,6 @@
 		var elem = $elem.get(0);
 		log('Firing delayed ' + event_type + '!');
 		if(debug_mode !== true){
-			elem.submit();
 			$elem.trigger(event_type);
 			elem.submit && elem.submit();
 			if(event_type === 'click' && $elem.hasClass('nofollow') === false){
@@ -180,35 +193,39 @@
 	}
 
 	function isDestinationOutbound($elem){
-		var is_outbound = false,
-			url = $elem.attr('href') || '',
-			// Try it with forms url = $elem.attr('href') || $elem.attr('action') || '',
-			host = location.host !== '' || 'localhost',
+		var host = location.host !== '' || 'localhost',
+			url = $elem.attr('href') || $elem.attr('action') || '',
 			is_outbound = url.indexOf(host) == -1 && url.match(/^http/i);
 		return !!is_outbound;
 	}
 
-	function highlightElement(){
+	function hoverElement(){
 		$(this).css(debug_highlight_css);
 	}
 
-	function unHighlightElement(){
+	function highlightElement(){
 		$(this).css(debug_css);
 	}
 
+	function highlightAllElements(){
+		for(var rule in rule_dom_elements){
+			$.each(rule_dom_elements[rule], highlightElement);
+		}
+	};
+
 	function bindDebugHover(event_data, $elem, selector){
-		var highlight_all = function(){
-			debug_mode && rule_dom_elements[selector].each(highlightElement);
+		var hover_all = function(){
+			debug_mode && rule_dom_elements[selector].each(hoverElement);
 		},
-		highlight_none = function(){
-			debug_mode && rule_dom_elements[selector].each(unHighlightElement);
+		hover_none = function(){
+			debug_mode && rule_dom_elements[selector].each(highlightElement);
 		};
 		if(typeof rule_dom_elements[selector] === 'undefined'){
 			rule_dom_elements[selector] = jQuery();
 		}
 		rule_dom_elements[selector] = rule_dom_elements[selector].add($elem);
 		debug_mode && $elem.css(debug_css);
-		$elem.hover(highlight_all, highlight_none)
+		$elem.hover(hover_all, hover_none)
 	}
 
 	function bindEvent(event_data, $elem, selector){
@@ -236,6 +253,7 @@
 		_gat = undefined;
 		_gaq = [['_setAccount', 'UA-00000000-1']];
 		loadScript('http://www.google-analytics.com/u/ga_debug.js');
+		highlightAllElements();
 	}
 
 	public.undebug = function(){

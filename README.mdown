@@ -55,7 +55,10 @@ You definitely want to run Trackiffer in debug mode to test this all out. It's s
 
 	trackiffer('debug');
 
-Debug mode will cancel all tracked clicks (so you stay on the current page) and log tons of cool info in the console.
+Debug mode will cancel all tracked clicks (so you stay on the current page) and log tons of cool info in the console. 
+You can also do a quick debug by visiting the url in question with a #trackiffer_debug hash:
+
+	http://example.com/#trackiffer_debug
 
 ## Is Trackiffer broken?
 

@@ -13,10 +13,10 @@
 			}
 		</style>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
-		<script type="text/javascript">
-			_gaq = [['_setAccount', 'UA-11111111-1']];
-		</script>
+		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script> 
+		<!--
+			<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script> 
+		-->
 		<script type="text/javascript" src="jasmine/jasmine.js"></script>
 		<script type="text/javascript" src="jasmine/jasmine-html.js"></script>
 		<script type="text/javascript" src="tests.js"></script>
@@ -54,23 +54,20 @@
 			<option value="3">Select item three</option>
 		</select>
 
-		<a class="test">Run the full test suite</a>
-
 		<script type="text/javascript" src="trackiffer.js"></script>
 		<script type="text/javascript">
 
-			// Rules - selectors on the left, events on the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
-			trackiffer({
-				'.internal_link' : ['Internal Link', 'Click', '#TEXT#'],
-				'.internal_form' : ['Internal Form', 'Submit', 'Email Signup'],
-				'.outbound_link' : ['Outbound Link', 'Click', '#TEXT#'],
-				'.outbound_form' : ['Outbound Form', '#METHOD#', function(N){return N.siblings("h2").text()}],
-				'select' : ['Select', '#NAME#', "#VALUE#"],
-				'input[type=text]' : ['Input', 'Type', function(N){return N.val() + ' field'}],
-			});
+			_gaq.push(['_setAccount', 'UA-00000000-1']);
 
-			// Debug mode - when set, all clicks will be cancelled, and no events will be sent back to GA
-			// trackiffer('debug');
+			// Rules - selectors to the left, events to the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
+			trackiffer({
+				'.internal_link'     : ['Internal Link', 'Click', '#TEXT#'],
+				'.internal_form'     : ['Internal Form', 'Submit', 'Email Signup'],
+				'.outbound_link'     : ['Outbound Link', 'Click', '#TEXT#'],
+				'.outbound_form'     : ['Outbound Form', '#METHOD#', function(N){return N.siblings("h2").text()}],
+				'select'             : ['Select', '#NAME#', "#VALUE#"],
+				'input[type=text]'   : ['Input', 'Type', function(N){return N.val() + ' field'}],
+			});
 
 		</script>
 
