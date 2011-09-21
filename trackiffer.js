@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.1.6
+ * Trackiffer v0.1.7
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 	var public = {
 			'version' : function(){
-				return '0.1.6'; 
+				return '0.1.7'; 
 			}
 		},
 		debug_mode = document.location.hash === '#trackiffer_debug',
@@ -250,8 +250,8 @@
 		debug_mode = true;
 		log('Trackiffer entering debug mode.');
 		log('Tracked links WILL NOT WORK and WILL NOT TRACK while in debug mode.');
-		_gat = undefined;
-		_gaq = [['_setAccount', 'UA-00000000-1']];
+		window._gat = undefined;
+		window._gaq = [['_setAccount', 'UA-00000000-1']];
 		loadScript('http://www.google-analytics.com/u/ga_debug.js');
 		highlightAllElements();
 	}
@@ -270,6 +270,6 @@
 
 	init();
 
-	debug_mode && public.debug();
+	debug_mode && $(window).load(public.debug);
 
 })(document, window);
