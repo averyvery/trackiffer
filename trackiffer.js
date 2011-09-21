@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.1.5
+ * Trackiffer v0.1.6
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
