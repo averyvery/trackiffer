@@ -2,75 +2,88 @@
 <html>
 	<head>
 		<title>Trackiffer - Easy GA Event tracking</title>
-		<link rel="stylesheet" type="text/css" href="jasmine/jasmine.css">
 		<style type="text/css">
 			body {
 				color: #444;
 				font-family: sans-serif;
-				font-size: 18px;
+				font-size: 16px;
 				line-height: 1.5;
-				margin: 60px;
+				margin: 60px 80px;
+			}
+			.row {
+				overflow: hidden;
+			}
+			.section {
+				border-top: 5px solid #eee;
+				padding: 10px 0 20px;	
 			}
 		</style>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script> 
-		<!--
-			<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script> 
-		-->
-		<script type="text/javascript" src="jasmine/jasmine.js"></script>
-		<script type="text/javascript" src="jasmine/jasmine-html.js"></script>
-		<script type="text/javascript" src="tests.js"></script>
 
 	</head>
 	<body title="Trackiffer's Body">
 	
+		<h1>Bookmarklet</h1>
 		<p>Want to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='https://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();setTimeout(function(){trackiffer('debug')}, 1000);">Trackiffer</a></p>
-		<p><a class="internal_link" href="/">Internal link</a></p>
-		<p><a class="internal_link" href="/">Internal link</a></p>
-		<p><a class="internal_link" href="/">Internal link</a></p>
-		
-		<form action="/" class="internal_form" method="get">
-			<h2>Internal Form</h2>
-			<input type="text" />
-			<button type="submit">Submit Internal Form</button>
-		</form>
 
-		<hr />
+		<div class="simple">
+			<h2>Simple Tracking</h2>
+			<div class="section">
+				<h3>Internal Links &amp; Forms</h3>
+				<p>
+					<a class="text" href="/">Link 1 Text</a>
+					<a class="title" title="Link 2 Title" href="/">Link 2 Text</a>
+				</p>
+				<form action="/" class="simple" method="get">
+					<button type="submit">Submit</button>
+				</form>
+			</div>
+			<div class="section">
+				<h3>External Links &amp; Forms</h3>
+				<p>
+					<a class="text" href="/">Link 1 Text</a>
+					<a class="title" title="Link 2 Title" href="/">Link 2 Text</a>
+				</p>
+				<form action="http://example.com" class="simple" method="get">
+					<button type="submit">Submit</button>
+				</form>
+			</div>
+			<div class="section">
+				<h3>Form Elements</h3>
+				<input type="text" class="simple" value="Text input" />
+				<select name="Select Name">
+					<option value="Select Option One">Select Option One</option>
+					<option value="Select Option Two">Select Option Two</option>
+					<option value="Select Option Three">Select Option Three</option>
+				</select>
+			</div>
+		</div>
 
-		<p><a href="http://example.com" class="outbound_link">'Outbound', link, "1"</a></p>
-		<p><a href="http://example.com" class="outbound_link">Outbound link 2</a></p>
-		<p><a href="http://example.com" class="outbound_link">Outbound link 3</a></p>
-		<form action="http://example.com" class="outbound_form" method="get">
-			<h2>Outbound Form</h2>
-			<input type="text" />
-			<button type="submit">Submit</button>
-		</form>
+		<div class="advanced">
+			<h2>Advanced Tracking</h2>
+			<a href="http://example.com/">
+				Visit Our <b>Blog</b>
+			</a>
+			<input type="text" value="Type any number" />
+		</div>
 
-		<hr />
-
-		<select name="Select name">
-			<option value="1">Select item one</option>
-			<option value="2">Select item two</option>
-			<option value="3">Select item three</option>
-		</select>
-
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script> 
 		<script type="text/javascript" src="trackiffer.js"></script>
 		<script type="text/javascript">
 
 			_gaq.push(['_setAccount', 'UA-00000000-1']);
 
-			// Rules - selectors to the left, events to the right. The string #TEXT# in the label (third slot) will be replaced by the link text.
 			trackiffer({
-				'.internal_link'     : ['Internal Link', 'Click', '#TEXT#'],
-				'.internal_form'     : ['Internal Form', 'Submit', 'Email Signup'],
-				'.outbound_link'     : ['Outbound Link', 'Click', '#TEXT#'],
-				'.outbound_form'     : ['Outbound Form', '#METHOD#', function(N){return N.siblings("h2").text()}],
-				'select'             : ['Select', '#NAME#', "#VALUE#"],
-				'input[type=text]'   : ['Input', 'Type', function(N){return N.val() + ' field'}],
+				'.simple a.text'           : ['Link', 'Click', '#TEXT#'],
+				'.simple a.title'          : ['Link', 'Click', '#TITLE#'],
+				'.simple form'             : ['Form', 'Submit', 'Email Signup'],
+				'.simple select'           : ['Select', '#NAME#', "#VALUE#"],
+				'.simple input[type=text]' : ['Input', 'Type', "#VALUE#"],
+				'.advanced a'              : ['Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
+				'.advanced input'          : ['Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
 			});
 
 		</script>
 
 	</body>
 </html>
-
