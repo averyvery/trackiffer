@@ -236,9 +236,9 @@
 						var stored_event_data = _t.formatData(event_data.slice(0), $elem),
 							is_outbound = _t.isDestinationOutbound($elem);
 						_t.log('|    parsing ', event_data);
-						_t.log('v');
+						_t.log('v    ');
 						window._gaq.push(stored_event_data);
-						_t.log('^');
+						_t.log('^    ');
 						if (is_outbound){
 							_t.log('|    outbound event - delaying');
 							_t.delayAction(event, event_type, $elem, handler);
