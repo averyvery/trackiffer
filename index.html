@@ -4,7 +4,7 @@
 		<title>Trackiffer - Easy GA Event tracking</title>
 		<style type="text/css">
 			body {
-				color: #444;
+				color: #555;
 				font-family: sans-serif;
 				font-size: 16px;
 				line-height: 1.5;
@@ -14,8 +14,11 @@
 				overflow: hidden;
 			}
 			.section {
-				border-bottom: 2px solid #ccc;
+				border-bottom: 1px solid #eee;
 				padding: 15px 20px 40px;	
+			}
+			input {
+				width: 300px;
 			}
 		</style>
 
@@ -25,6 +28,11 @@
 		<div class="section">
 			<h2>Bookmarklet</h2>
 			<p>Want to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='https://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();setTimeout(function(){trackiffer('debug')}, 1000);">Trackiffer</a></p>
+		</div>
+
+		<div class="section">
+			<h2>Debug</h2>
+			<p>To see the debugger in action, <a href="#" id="debug">click here.</a> or visit <a href="#trackiffer_debug">index.html/#trackiffer_debug</a> and refresh the page.</p>
 		</div>
 
 		<div class="simple">
@@ -72,7 +80,7 @@
 					</a>
 				</p>
 				<p>
-					<input type="text" value="Type any number" />
+					<input type="text" placeholder="Round a number before tracking" />
 				</p>
 			</div>
 		</div>
@@ -92,6 +100,11 @@
 				'.simple input[type=text]' : ['Input', 'Type', "#VALUE#"],
 				'.advanced a'              : ['Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
 				'.advanced input'          : ['Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
+			});
+
+			jQuery('#debug').click(function(event){
+				event.preventDefault();
+				trackiffer('debug');
 			});
 
 		</script>
