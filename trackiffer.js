@@ -324,13 +324,17 @@
 
 	window.trackiffer = function(argument){
 		
-		var is_rules = typeof argument === 'object';
+		var is_rules = typeof argument === 'object',
+			is_method = typeof _t[argument] === 'function';
 		if (is_rules){
 			_t.bindRules(argument);
+		} else if(is_method) {
+			_t[argument]();
+		} else if(argument){
+			return _t[argument];
 		} else {
-			_t[argument] && _t[argument]();
-		}
-		return _t;
+			return _t;
+		};
 
 	};
 
