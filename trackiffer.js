@@ -40,19 +40,21 @@
 			},
 
 			init : function(){
-				_t.loadjQuery();
 				_t.checkHash();
+				_t.checkjQuery();
 			},
 
-			queuedCall : function(){},
+			stored_rules : {},
 
 		/* @end */
 		
-		/* @group dependencies */
+		/* @group requirements */
 		
-			loadjQuery : function(){
+			checkjQuery : function(){
+				_t.log('');
+				_t.log('+ checking for jQuery');
 				_t.isjQueryVersionHighEnough() || _t.loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js');
-				_t.checkjQuery();
+				_t.polljQueryVersion();
 			},
 
 			normalizeVersion : function(version) {
@@ -68,25 +70,27 @@
 				var version = window.jQuery && jQuery.fn.jquery || '0',
 					normalized_version = _t.normalizeVersion(version),
 					normalized_min = _t.normalizeVersion(_t.jquery.min_version);
-				_t.log('Checking jQuery version: ' + version + ' (needs to be ' + _t.jquery.min_version + ')');
 				if(normalized_version > normalized_min) {
 					_t.jquery.high_enough = true;
+				} else {
+					_t.log('|    wrong version: ' + version + ' (needs to be > ' + _t.jquery.min_version + ')');
 				}
 				return _t.jquery.high_enough;
 			},
 
-			checkjQuery : function(){
-				_t.isjQueryVersionHighEnough() ? _t.jQueryHasLoaded() : setTimeout(_t.checkjQuery, 100);
+			polljQueryVersion : function(){
+				_t.log('|    waiting 100ms');
+				_t.isjQueryVersionHighEnough() ? _t.jQueryHasLoaded() : setTimeout(_t.polljQueryVersion, 100);
 			},
 
 			jQueryHasLoaded : function(){
-				_t.log('jQuery has loaded!');
+				_t.log('|    loaded jQuery');
 				_t.jquery.loaded = true;
-				_t.queuedCall();
+				_t.bindRules(_t.stored_rules);
 			},
 
 			loadScript : function(src){
-				_t.log('Loading ' + src);
+				_t.log('|    loading ' + src);
 				var new_script = document.createElement('script'),
 					first_script = document.getElementsByTagName('script')[0]; 
 				new_script.type = 'text/javascript';
@@ -158,8 +162,7 @@
 		
 			executeDelayedAction : function(event_type, $elem){
 				var elem = $elem.get(0);
-				log('Firing delayed ' + event_type + '!');
-				if(debug_mode !== true){
+				if(_t.debugging !== true){
 					$elem.trigger(event_type);
 					elem.submit && elem.submit();
 					if(event_type === 'click' && $elem.hasClass('nofollow') === false){
@@ -171,6 +174,7 @@
 			delayAction : function(event, event_type, $elem){
 				event.preventDefault();
 				var repeat_action = function(){
+					_t.log('|    outbound event - firing after 100ms');
 					_t.executeDelayedAction(event_type, $elem);
 				};
 				$elem.unbind(event_type + '.trackiffer');
@@ -182,22 +186,25 @@
 		/* @group binding */
 		
 			bindRules : function(rules){
+				_t.stored_rules = rules;
 				if(_t.jquery.loaded){
+					_t.log('');
+					_t.log('+  binding rules');
 					for(var selector in rules){
 						if (rules.hasOwnProperty(selector)) {
 							_t.bindRulesToSelector(selector, rules);
 						}
 					}
 				} else {
-					_t.log('Delaying bind until jQuery loads...');
-					_t.queuedCall = function(){
-						_t.bindRules(rules);
-					};
+					_t.log('|    delaying init until jQuery loads');
 				}
+				_t.debugging && _t.highlightAllElements();
 			},
 
 			bindRulesToSelector : function(selector, rules){
-				jQuery(selector).each(function(){
+				var $elems = jQuery(selector);
+				$elems.each(function(i){
+					i === 0 && _t.log('|    ' + $elems.length + 'x ' + selector);
 					_t.bindEvent(rules[selector], jQuery(this), selector);
 				});
 			},
@@ -224,13 +231,18 @@
 			bindEvent : function(event_data, $elem, selector){
 				var event_type = _t.getEventType($elem),
 					handler = function(event){
+						_t.log('');
+						_t.log('+  ' + event_type + ' on ' + selector);
 						var stored_event_data = _t.formatData(event_data.slice(0), $elem),
 							is_outbound = _t.isDestinationOutbound($elem);
+						_t.log('|    parsing ', event_data);
+						_t.log('v');
 						window._gaq.push(stored_event_data);
+						_t.log('^');
 						if (is_outbound){
-							log('Delaying outbound action...');
+							_t.log('|    outbound event - delaying');
 							_t.delayAction(event, event_type, $elem, handler);
-						} else if(debug_mode){
+						} else if(_t.debugging){
 							return false;
 						}
 					};
@@ -246,7 +258,7 @@
 
 			checkHash : function(){
 				_t.debugging = document.location.hash === '#trackiffer_debug';
-				_t.debugging.true && jQuery(window).load(_t.debug);
+				_t.debugging && _t.debug();
 			},
 		
 			debug_outlines : {
@@ -257,22 +269,23 @@
 			log : function(){
 				if(_t.debugging && typeof console === 'object' && console.log){
 					var args = Array.prototype.slice.call(arguments); 
-					args.unshift('---');
+					args.unshift('');
 					console.log.apply(console, args);
 				}
 			},
 		
 			undefineGa : function(){
+				_t.log('|    unsetting existing GA');
 				window._gat = undefined;
 				window._gaq = [['_setAccount', 'UA-00000000-1']];
 			},
 
 			debug : function(){
 				_t.debugging = true;
-				_t.log('Trackiffer entering debug mode - Tracked links WILL NOT WORK and WILL NOT TRACK while in debug mode.');
+				_t.log('+  debug mode');
 				_t.undefineGa();
-				loadScript('http://www.google-analytics.com/u/ga_debug.js');
-				highlightAllElements();
+				_t.loadScript('http://www.google-analytics.com/u/ga_debug.js');
+				_t.highlightAllElements();
 			},
 
 			highlightAllElements : function(){
@@ -302,7 +315,6 @@
 					_t.tracked_elems[selector] = jQuery();
 				}
 				_t.tracked_elems[selector] = _t.tracked_elems[selector].add($elem);
-				_t.debugging && _t.highlightAllElements();
 				$elem.hover(hover_all, hover_none);
 			},
 
@@ -310,9 +322,8 @@
 
 	};
 
-	_t.init();
-
 	window.trackiffer = function(argument){
+		
 		var is_rules = typeof argument === 'object';
 		if (is_rules){
 			_t.bindRules(argument);
@@ -320,6 +331,9 @@
 			_t[argument] && _t[argument]();
 		}
 		return _t;
+
 	};
+
+	_t.init();
 
 })(document, window);

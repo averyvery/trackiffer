@@ -14,19 +14,20 @@
 				overflow: hidden;
 			}
 			.section {
-				border-top: 5px solid #eee;
-				padding: 10px 0 20px;	
+				border-bottom: 2px solid #ccc;
+				padding: 15px 20px 40px;	
 			}
 		</style>
 
 	</head>
 	<body title="Trackiffer's Body">
 	
-		<h1>Bookmarklet</h1>
-		<p>Want to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='https://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();setTimeout(function(){trackiffer('debug')}, 1000);">Trackiffer</a></p>
+		<div class="section">
+			<h2>Bookmarklet</h2>
+			<p>Want to test trackiffer out on a page? Drag this link to your toolbar: <a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='https://raw.github.com/averyvery/trackiffer/master/trackiffer.js';})();setTimeout(function(){trackiffer('debug')}, 1000);">Trackiffer</a></p>
+		</div>
 
 		<div class="simple">
-			<h2>Simple Tracking</h2>
 			<div class="section">
 				<h3>Internal Links &amp; Forms</h3>
 				<p>
@@ -40,8 +41,8 @@
 			<div class="section">
 				<h3>External Links &amp; Forms</h3>
 				<p>
-					<a class="text" href="/">Link 1 Text</a>
-					<a class="title" title="Link 2 Title" href="/">Link 2 Text</a>
+					<a class="text" href="http://example.com">Link 1 Text</a>
+					<a class="title" title="Link 2 Title" href="http://example.com">Link 2 Text</a>
 				</p>
 				<form action="http://example.com" class="simple" method="get">
 					<button type="submit">Submit</button>
@@ -49,29 +50,39 @@
 			</div>
 			<div class="section">
 				<h3>Form Elements</h3>
-				<input type="text" class="simple" value="Text input" />
-				<select name="Select Name">
-					<option value="Select Option One">Select Option One</option>
-					<option value="Select Option Two">Select Option Two</option>
-					<option value="Select Option Three">Select Option Three</option>
-				</select>
+				<p>
+					<input type="text" class="simple" value="Text input" />
+				</p>
+				<p>
+					<select name="Select Name">
+						<option value="Select Option One">Select Option One</option>
+						<option value="Select Option Two">Select Option Two</option>
+						<option value="Select Option Three">Select Option Three</option>
+					</select>
+				</p>
 			</div>
 		</div>
 
 		<div class="advanced">
-			<h2>Advanced Tracking</h2>
-			<a href="http://example.com/">
-				Visit Our <b>Blog</b>
-			</a>
-			<input type="text" value="Type any number" />
+			<div class="section">
+				<h3>Advanced Tracking</h3>
+				<p>
+					<a href="http://example.com/">
+						Visit Our <b>Blog</b>
+					</a>
+				</p>
+				<p>
+					<input type="text" value="Type any number" />
+				</p>
+			</div>
 		</div>
 
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
 		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script> 
 		<script type="text/javascript" src="trackiffer.js"></script>
 		<script type="text/javascript">
 
-			_gaq.push(['_setAccount', 'UA-00000000-1']);
+			_gaq.push(['_setAccount', 'UA-111111111-1']);
 
 			trackiffer({
 				'.simple a.text'           : ['Link', 'Click', '#TEXT#'],
