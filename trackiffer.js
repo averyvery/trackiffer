@@ -86,6 +86,7 @@
 			jQueryHasLoaded : function(){
 				_t.log('|    loaded jQuery');
 				_t.jquery.loaded = true;
+				jQuery.noConflict();
 				_t.bindRules(_t.stored_rules);
 			},
 
