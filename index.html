@@ -84,19 +84,19 @@
 					<input type="text" placeholder="Round a number before tracking" />
 				</p>
 				<p>
-					<a href="http://example.com/track/" class="url-parse">example.com/track</a>
+					<a href="http://example2.com/track/" class="url-parse">example.com/track</a>
 				</p>
 				<p>
-					<a href="http://subdomain.example.com/track/" class="url-parse">subdomain.example.com/track</a>
+					<a href="http://subdomain.example2.com/track/" class="url-parse">subdomain.example.com/track</a>
 				</p>
 				<p>
-					<a href="http://example.com/no-track/" class="url-parse">example.com/no-track</a>
+					<a href="http://example2.com/no-track/" class="url-parse">example.com/no-track</a>
 				</p>
 			</div>
 		</div>
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
-		<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
+		<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script>
 		<script type="text/javascript" src="trackiffer.js"></script>
 		<script type="text/javascript">
 
@@ -108,19 +108,15 @@
 				'.simple a.twomatches'     : ['Select', 'Form Element', '#TITLE# and #TEXT#', 40],
 				'.simple form'             : ['Form', 'Submit', 'Email Signup'],
 				'.simple select'           : ['Select', '#NAME#', '#VALUE#'],
-				'.simple input[type=text]' : ['Input', 'Type', "#VALUE#"],
-				'.advanced a.b-text'       : ['Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
-				'.advanced input'          : ['Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
-				'.advanced a[href*="example.com"]:not([href*="example.com/no-track"])' : 
-					['Advanced Link', 'Click', '#HREF#']
+				'.simple input[type=text]' : ['Input', 'Type', "#VALUE#"]
 			});
 
-			/*
-			jQuery('#debug').click(function(event){
-				event.preventDefault();
-				trackiffer('debug');
+			trackiffer({
+				'.advanced a.b-text'       : ['Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
+				'.advanced input'          : ['Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
+				'.advanced a[href*="example2.com"]:not([href*="example2.com/no-track"])' : 
+					['Advanced Link', 'Click', '#HREF#']
 			});
-			*/
 
 		</script>
 

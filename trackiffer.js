@@ -63,11 +63,11 @@
 				_t.log('+ checking for jQuery');
 				; 
 				if(_t.isjQueryVersionHighEnough() === false){
-					_t.log('| jQuery version too low');
+					_t.log('|    jQuery version too low');
 					_t.loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js');
 					_t.polljQueryVersion();
 				} else {
-					_t.log('| jQuery present');
+					_t.log('|    jQuery present');
 					_t.jquery.loaded = true;
 					_t.bindRules();
 				}
@@ -172,6 +172,35 @@
 
 		/* @group delay events */
 		
+			isDestinationOutbound : function($elem){
+
+				var destination = $elem.attr('href') || $elem.attr('action'),
+					is_outbound = false;
+
+				if(destination){
+				
+					var current_host = window.location.host,
+
+						// email link
+						mailto_matches = destination.match('mailto:'),
+						is_mailto = mailto_matches !== null,
+
+						// file
+						document_matches = destination.match(/\.(?:doc|eps|jpg|png|svg|xls|ppt|pdf|xls|zip|txt|vsd|vxd|js|css|rar|exe|wma|mov|avi|wmv|mp3)($|\&|\?)/),
+						is_document = document_matches !== null,
+
+						// external host
+						host_matches = destination.match(current_host),
+						is_other_host = host_matches === null;
+
+					is_outbound = is_other_host || is_mailto || is_document;
+
+				}
+
+				return !!is_outbound;
+
+			},
+
 			executeDelayedAction : function(event_type, $elem){
 				var elem = $elem.get(0);
 				if(_t.debugging !== true){
@@ -234,13 +263,6 @@
 				return event_type;
 			},
 
-			isDestinationOutbound : function($elem){
-				var host = location.host !== '' || 'localhost',
-					url = $elem.attr('href') || $elem.attr('action') || '',
-					is_outbound = url.indexOf(host) === -1 && url.match(/^http/i);
-				return !!is_outbound;
-			},
-
 			bindEvent : function(event_data, $elem, selector){
 				var event_type = _t.getEventType($elem),
 					handler = function(event){
@@ -269,16 +291,16 @@
 
 			debugging : false,
 
-			checkHash : function(){
-				_t.debugging = document.location.hash === '#trackiffer_debug';
-				_t.debugging && _t.debug();
-			},
-		
 			debug_outlines : {
 				'highlight' : 'rgba(0,200,200,.35) 3px solid',
 				'hover' : 'rgba(250,0,0,.7) 3px solid'
 			},
 
+			checkHash : function(){
+				_t.debugging = window.location.hash === '#trackiffer_debug';
+				_t.debugging && _t.debug();
+			},
+		
 			log : function(){
 				if(_t.debugging && typeof console === 'object' && console.log){
 					var args = Array.prototype.slice.call(arguments); 

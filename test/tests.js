@@ -2,22 +2,6 @@
 
 	"use strict";
 
-	/* @group setup */
-	
-		var logs = [];
-
-		window._console = {
-			'log' : function(){
-				var args = Array.prototype.slice.call(arguments); 
-				logs.push(args);
-			},
-			'clear' : function(){
-				logs = [];
-			}
-		};
-	
-	/* @end */
-	
 	/* @group units */
 
 		describe('Trackiffer', function(){
@@ -71,6 +55,127 @@
 			});
 			it('comments out commas', function(){
 				expect(T.replaceBadCharacters('test,test')).toEqual('test\\,test');
+			});
+		});
+
+		describe('Delaying outbound actions', function(){
+			var T = trackiffer();
+			it('detects outbound links', function(){
+				expect(T.isDestinationOutbound($('<a href="mailto:dougunderscorenelson"></a>'))).toEqual(true);
+				expect(T.isDestinationOutbound($('<a href="example.doc"></a>'))).toEqual(true);
+				expect(T.isDestinationOutbound($('<a href="http://example.com"></a>'))).toEqual(true);
+				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '"></a>'))).toEqual(false);
+			});
+			it('detects non-outbound elements', function(){
+				expect(T.isDestinationOutbound($('<span></span>'))).toEqual(false);
+			});
+			it('detects outbound forms', function(){
+				expect(T.isDestinationOutbound($('<form action="http://example.com"></form>'))).toEqual(true);
+				expect(T.isDestinationOutbound($('<form action="' + window.location.href + '"></form>'))).toEqual(false);
+			});
+			// note: not able to test delay directly with spies? very strange
+			it('calls delayed clicks after 100ms', function(){
+				spyOn(T, 'executeDelayedAction');
+				T.executeDelayedAction('click', $('<a href="#"></a>'));
+				expect(T.executeDelayedAction).toHaveBeenCalled();
+			});
+			it('calls delayed submits after 100ms', function(){
+				spyOn(T, 'executeDelayedAction');
+				T.executeDelayedAction('submit', $('<form action="#"></form>'));
+				expect(T.executeDelayedAction).toHaveBeenCalled();
+			});
+		});
+
+		describe('Binding', function(){
+			var T = trackiffer();
+			it('tracks rules if jQuery is loaded', function(){
+				T.jquery.loaded = true;
+				spyOn(T, 'bindRules');
+				T.trackRules();
+				expect(T.bindRules).toHaveBeenCalled();
+			});
+			it('doesn\'t tracks if jQuery is  not loaded', function(){
+				T.jquery.loaded = false;
+				spyOn(T, 'bindRules');
+				T.trackRules();
+				expect(T.bindRules.callCount).toEqual(0);
+			});
+			it('binds all rules to selectors', function(){
+				spyOn(T, 'bindRulesToSelector');
+				T.rules = {'a' : [], 'b' : [], 'c' : []};
+				T.bindRules();
+				expect(T.bindRulesToSelector.callCount).toEqual(3);
+			});
+			it('empties ruleset after binding', function(){
+				T.rules = {'a' : [], 'b' : [], 'c' : []};
+				T.bindRules();
+				expect(T.rules).toEqual({});
+			});
+			it('binds X handlers to X elements', function(){
+				for(var i = 0; i < 3; i++){
+					$('body').append('<a href="#" class="trackiffer_test"></a>');
+				};
+				spyOn(T, 'bindEvent');
+				T.bindRulesToSelector('a.trackiffer_test'); 
+				expect(T.bindEvent.callCount).toEqual(3);
+			});
+			it('gets appropriate event type from element', function(){
+				expect(T.getEventType($('<a href="#"></a>'))).toEqual('click');
+				expect(T.getEventType($('<span></span>'))).toEqual('click');
+				expect(T.getEventType($('<form></form>'))).toEqual('submit');
+				expect(T.getEventType($('<select></select>'))).toEqual('change');
+				expect(T.getEventType($('<input></input>'))).toEqual('click');
+				expect(T.getEventType($('<input type="text"></input>'))).toEqual('blur');
+			});
+			it('binds an event', function(){
+				var $elem = $('<span></span>');
+				expect($elem.data('events')).toEqual(undefined);
+				T.bindEvent([], $elem); 
+				expect($elem.data('events')['click']).toNotEqual(undefined);
+			});
+			it('binds a _gaqpush', function(){
+				var $elem = $('<span></span>');
+				T.debugging = false;
+				spyOn(window._gaq, 'push');
+				T.bindEvent(['_trackEvent', 'test', 'test'], $elem, 'span'); 
+				$elem.click();
+				expect(window._gaq.push).toHaveBeenCalled();
+			});
+		});
+
+		describe('Debugging', function(){
+			var T = trackiffer();
+			it('runs debug when hash is set', function(){
+				window.location.hash = '#trackiffer_debug';
+				spyOn(T, 'debug');
+				T.checkHash();
+				expect(T.debug).toHaveBeenCalled();
+			});
+			it('runs debug when hash is set', function(){
+				window.location.hash = '#test';
+				spyOn(T, 'debug');
+				T.checkHash();
+				expect(T.debug.callCount).toEqual(0);
+			});
+			it('ducks log so we can track it', function(){
+				window.saved_console = window.console;
+				window.console = {
+					'log' : function(){
+						var args = Array.prototype.slice.call(arguments); 
+						window.console.logs.push(args);
+					},
+					'logs' : []
+				};
+				expect(window.console.logs).toEqual([]);
+			});
+			it('logs', function(){
+				T.debugging = true;
+				T.log('test');
+				expect(window.console.logs[window.console.logs.length - 1][1]).toEqual('test');
+			});
+			it('restores log', function(){
+				window.console = window.saved_console;
+				expect(window.console.logs).toEqual(undefined);
 			});
 		});
 
@@ -157,12 +262,6 @@
 			});
 		});
 	
-		describe('Formatting', function(){
-			it('', function(){
-
-			});
-		});
-
 	/* @end */
 	
 	/* @group behaviors */
