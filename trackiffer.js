@@ -23,8 +23,7 @@
 
 			jquery : {
 				'min_version' : '1.4.0',
-				'high_enough' : null,
-				'loaded' : false
+				'loaded' : false,
 			},
 
 			tracked_elems : {},
@@ -44,17 +43,34 @@
 				_t.checkjQuery();
 			},
 
-			stored_rules : {},
+			rules : {},
 
 		/* @end */
 		
 		/* @group requirements */
 		
+			loadScript : function(src){
+				_t.log('|    loading ' + src);
+				var new_script = document.createElement('script'),
+					first_script = document.getElementsByTagName('script')[0]; 
+				new_script.type = 'text/javascript';
+				new_script.src = src;
+				first_script.parentNode.insertBefore(new_script, first_script);
+			},
+		
 			checkjQuery : function(){
 				_t.log('');
 				_t.log('+ checking for jQuery');
-				_t.isjQueryVersionHighEnough() || _t.loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js');
-				_t.polljQueryVersion();
+				; 
+				if(_t.isjQueryVersionHighEnough() === false){
+					_t.log('| jQuery version too low');
+					_t.loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js');
+					_t.polljQueryVersion();
+				} else {
+					_t.log('| jQuery present');
+					_t.jquery.loaded = true;
+					_t.bindRules();
+				}
 			},
 
 			normalizeVersion : function(version) {
@@ -67,15 +83,12 @@
 			},
 
 			isjQueryVersionHighEnough : function(){
-				var version = window.jQuery && jQuery.fn.jquery || '0',
+				var version = (typeof window.jQuery === 'function') && jQuery.fn.jquery || '0',
 					normalized_version = _t.normalizeVersion(version),
-					normalized_min = _t.normalizeVersion(_t.jquery.min_version);
-				if(normalized_version > normalized_min) {
-					_t.jquery.high_enough = true;
-				} else {
-					_t.log('|    wrong version: ' + version + ' (needs to be > ' + _t.jquery.min_version + ')');
-				}
-				return _t.jquery.high_enough;
+					normalized_min = _t.normalizeVersion(_t.jquery.min_version),
+					is_high_enough = normalized_version > normalized_min;
+				is_high_enough || _t.log('|    wrong version: ' + version + ' (needs to be > ' + _t.jquery.min_version + ')');
+				return is_high_enough;
 			},
 
 			polljQueryVersion : function(){
@@ -87,32 +100,23 @@
 				_t.log('|    loaded jQuery');
 				_t.jquery.loaded = true;
 				jQuery.noConflict();
-				_t.bindRules(_t.stored_rules);
+				_t.bindRules();
 			},
 
-			loadScript : function(src){
-				_t.log('|    loading ' + src);
-				var new_script = document.createElement('script'),
-					first_script = document.getElementsByTagName('script')[0]; 
-				new_script.type = 'text/javascript';
-				new_script.src = src;
-				first_script.parentNode.insertBefore(new_script, first_script);
-			},
-		
 		/* @end */
 		
 		/* @group formatting data */
 		
 			formatData : function(event_data, $elem){
-				event_data = _t.parseTokens(event_data, $elem);
-				event_data.unshift('_trackEvent');
-				return event_data;
+				var parsed_event_data = _t.parseTokens(event_data, $elem);
+				parsed_event_data.unshift('_trackEvent');
+				return parsed_event_data;
 			},
 
 			getReplacement : function(match, $elem){
 				var replacement;
 				if(match){
-					switch(match[0]){
+					switch(match){
 						case '#VALUE#':
 							replacement = $elem.val();
 							break;
@@ -120,7 +124,7 @@
 							replacement = $elem.text();
 							break;
 						default:
-							var attribute = match[0].replace(/\#/g, '').toLowerCase();
+							var attribute = match.replace(/\#/g, '').toLowerCase();
 							replacement = $elem.attr(attribute);
 					} 
 					return replacement;
@@ -128,22 +132,29 @@
 			},
 
 			parseTokens : function(event_data, $elem){
-				for(var i = 0, length = event_data.length; i < length; i++){
-					var value = event_data[i];
+				for(var i = 0, data_length = event_data.length; i < data_length; i++){
+					var value = event_data[i],
+						safe_value,
+						should_be_string = (i !== 3);
 					if(typeof value === 'function'){
 						value = value($elem);
-					} else {
-						var pattern = /#.+?#/,
-							match = value.match(pattern),
-							attribute,
-							replacement;
-						replacement = jQuery.trim(_t.getReplacement(match, $elem));
-						if(replacement){
-							value = value.replace(pattern, replacement);
+					} else if(should_be_string){
+						var pattern = /#.+?#/g,
+							match_array = value.match(pattern),
+							replacement,
+							trimmed_replacement;
+						if(match_array){
+							for(var ii = 0, match_length = match_array.length; ii < match_length; ii++){
+								replacement = _t.getReplacement(match_array[ii], $elem);
+								if(replacement){
+									trimmed_replacement = jQuery.trim(replacement);
+									value = value.replace(pattern, trimmed_replacement);
+								}
+							}
 						}
 					}
-					value = _t.replaceBadCharacters(value);
-					event_data[i] = value;
+					safe_value = _t.replaceBadCharacters(value);
+					event_data[i] = safe_value;
 				}
 				return event_data;
 			},
@@ -186,27 +197,28 @@
 		
 		/* @group binding */
 		
-			bindRules : function(rules){
-				_t.stored_rules = rules;
-				if(_t.jquery.loaded){
-					_t.log('');
-					_t.log('+  binding rules');
-					for(var selector in rules){
-						if (rules.hasOwnProperty(selector)) {
-							_t.bindRulesToSelector(selector, rules);
-						}
-					}
-				} else {
-					_t.log('|    delaying init until jQuery loads');
-				}
-				_t.debugging && _t.highlightAllElements();
+			trackRules : function(rules){
+				_t.rules = rules;
+				_t.jquery.loaded ? _t.bindRules() : _t.log('|    delaying init until jQuery loads');
 			},
 
-			bindRulesToSelector : function(selector, rules){
+			bindRules : function(){
+				_t.log('');
+				_t.log('+  binding rules');
+				for(var selector in _t.rules){
+					if (_t.rules.hasOwnProperty(selector)) {
+						_t.bindRulesToSelector(selector);
+					}
+				}
+				_t.debugging && _t.highlightAllElements();
+				_t.rules = {};
+			},
+
+			bindRulesToSelector : function(selector){
 				var $elems = jQuery(selector);
 				$elems.each(function(i){
 					i === 0 && _t.log('|    ' + $elems.length + 'x ' + selector);
-					_t.bindEvent(rules[selector], jQuery(this), selector);
+					_t.bindEvent(_t.rules[selector], jQuery(this), selector);
 				});
 			},
 
@@ -292,7 +304,7 @@
 			highlightAllElements : function(){
 				for(var rule in _t.tracked_elems){
 					if (_t.tracked_elems.hasOwnProperty(rule)) {
-						$.each(_t.tracked_elems[rule], _t.highlightElement);
+						jQuery.each(_t.tracked_elems[rule], _t.highlightElement);
 					}
 				}
 			},
@@ -326,16 +338,18 @@
 	window.trackiffer = function(argument){
 		
 		var is_rules = typeof argument === 'object',
-			is_method = typeof _t[argument] === 'function';
+			is_method = typeof _t[argument] === 'function',
+			return_data = _t;
+
 		if (is_rules){
-			_t.bindRules(argument);
+			_t.trackRules(argument);
 		} else if(is_method) {
-			_t[argument]();
+			return_data = _t[argument]();
 		} else if(argument){
-			return _t[argument];
-		} else {
-			return _t;
-		};
+			return_data = _t[argument];
+		}; 
+
+		return return_data;
 
 	};
 
