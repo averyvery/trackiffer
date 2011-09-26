@@ -177,6 +177,54 @@
 				window.console = window.saved_console;
 				expect(window.console.logs).toEqual(undefined);
 			});
+			it('undefine ga when asked', function(){
+				window._gat = 'test';
+				window._gaq = 'test';
+				T.undefineGa();
+				expect(window._gat).toEqual(undefined);
+				expect(typeof window._gaq).toEqual('object');
+			});
+			it('should undefined ga before debug', function(){
+				spyOn(T, 'undefineGa');
+				T.debug();
+				expect(T.undefineGa).toHaveBeenCalled();
+			});
+			it('should load ga_debug before debug', function(){
+				spyOn(T, 'loadScript');
+				T.debug();
+				expect(T.loadScript).toHaveBeenCalled();
+			});
+			it('should highlight elements before debug', function(){
+				spyOn(T, 'highlightAllElements');
+				T.debug();
+				expect(T.highlightAllElements).toHaveBeenCalled();
+			});
+			it('should highlight elements in the tracked_elems array', function(){
+				spyOn(T, 'highlightElement');
+				T.tracked_elems = {
+					'X' : $('<span></span>').add($('<span></span>'))
+				};
+				T.highlightAllElements();
+				expect(T.highlightElement.callCount).toEqual(2);
+			});
+			it('should highlight an element', function(){
+				var $test_elem = $('<span></span>');
+				expect($test_elem.css('outline')).toEqual('');
+				T.highlightElement.call($test_elem[0]);
+				expect($test_elem.css('outline').match('3px solid')[0]).toEqual('3px solid');
+			});
+			it('should hover an element', function(){
+				var $test_elem = $('<span></span>');
+				expect($test_elem.css('outline')).toEqual('');
+				T.highlightElement.call($test_elem[0]);
+				expect($test_elem.css('outline').match('3px solid')[0]).toEqual('3px solid');
+			});
+			it('bind the debug hover style', function(){
+				window.$test_elem = $('<span></span>');
+				spyOn(window.$test_elem, 'hover');
+				T.bindDebugHover([], window.$test_elem, 'test');
+				expect(window.$test_elem.hover).toHaveBeenCalled();
+			});
 		});
 
 		describe('Requirements', function(){
