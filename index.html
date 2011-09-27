@@ -97,7 +97,10 @@
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
 		<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script>
-		<script type="text/javascript" src="trackiffer.js"></script>
+		<!--
+		<script type="text/javascript" src="trackiffer-0.2.js"></script>
+		-->
+		<script type="text/javascript" src="trackiffer-0.2.min.js"></script>
 		<script type="text/javascript">
 
 			_gaq.push(['_setAccount', 'UA-111111111-1']);
@@ -116,6 +119,11 @@
 				'.advanced input'          : ['Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
 				'.advanced a[href*="example2.com"]:not([href*="example2.com/no-track"])' : 
 					['Advanced Link', 'Click', '#HREF#']
+			});
+
+			jQuery('#debug').click(function(event){
+				event.preventDefault();
+				trackiffer('debug');
 			});
 
 		</script>
