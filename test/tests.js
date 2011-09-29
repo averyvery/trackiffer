@@ -252,6 +252,7 @@
 				});
 			});
 			it('normalizes version numbers', function(){
+				expect(T.normalizeVersion('0.9.0')).toEqual(90);
 				expect(T.normalizeVersion('9.0.0')).toEqual(900);
 				expect(T.normalizeVersion('9')).toEqual(900);
 				expect(T.normalizeVersion('0.0.1')).toEqual(1);

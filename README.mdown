@@ -1,4 +1,4 @@
-# Trackiffer 0.2 
+# Trackiffer 0.2.1 
 
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking GA events.
 
@@ -12,31 +12,28 @@ So what does it handle for you?
 - Loading jQuery. Trackiffer depends on jQuery, but if you _must_ deploy it on a site without jQuery, Trackiffer will load it for you.
 - Delay outbound links AND form submissions by 100ms to maximize your chances of tracking the event.
 
-## When would you use Trackiffer?
+## Adding to your site
 
-Whenever you want to track particular events and don't want to spend a few hours scripting it.
-Trackify simplifies the setup and testing of GA events like whoa.
+Add the trackiffer script to the end of your page's body tag, and call trackiffer like so:
 
-## Why does this exist?
+	<script type="text/javascript" src="/js/trackiffer.min.js"></script>
+	<script type="text/javascript">
+		trackiffer({
+			'a.social-twitter' : ['Link', 'Social', 'Twitter']
+		});
+	</script>
 
-The Viget marketing people are awesome - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
-
-The problem? This means we set up event tracking twice per site, and it's not a very repeatable or simple process....at least, until now. 
-
-I wanted to make a script that handled all the messy aspects of tracking, and enabled our GA wizards simply put together a ruleset and deploy, maybe even without developer help.
+Alternately, you can add your tracking code to the bottom of trackiffer.min.js and deploy that file on its own. 
+I recommend renaming it to trackiffer-[sitename].min.js when using this method.
 
 ## Use
 
-Add the trackiffer script to the end of your page's body tag. After that, add some code like this:
-
-	<script type="text/javascript">
-		trackiffer({
-			'a' : ['Link', 'Social', '#TEXT#'],
-			'select' : ['Outbound', 'Social', '#VALUE#'],
-			'.comment_form' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
-			'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
-		});
-	</script>
+	trackiffer({
+		'a' : ['Link', 'Social', '#TEXT#', 1],
+		'select' : ['Outbound', 'Social', '#VALUE#'],
+		'.comment_form' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
+		'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
+	});
 
 The left side is the jQuery selector you'd like to use, and the right side is the event data you want to track.
 	
@@ -69,6 +66,14 @@ If you experience issues, please report them [on the issues page](https://github
 
 Once you download Trackiffer, you can install the bookmarklet from the index.html page. 
 This will drop trackiffer onto any page you view and set debug mode - you can then execute and test trackiffer({rules}) from your browser's console.
+
+## Why does this exist?
+
+The Viget marketing people are awesome - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
+
+The problem? This means we set up event tracking twice per site, and it's not a very repeatable or simple process....at least, until now. 
+
+I wanted to make a script that handled all the messy aspects of tracking, and enabled our GA wizards simply put together a ruleset and deploy, maybe even without developer help.
 
 ## Thanks To
 

@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.2
+ * Trackiffer v0.2.1
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.2',
+			version : '0.2.1',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -43,6 +43,7 @@
 			},
 
 			init : function(){
+				_t.defineGa();
 				_t.checkHash();
 				_t.checkjQuery();
 			},
