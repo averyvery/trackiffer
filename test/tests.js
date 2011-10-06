@@ -194,12 +194,23 @@
 				T.debug();
 				expect(T.loadScript).toHaveBeenCalled();
 			});
+			it('should highlight an element', function(){
+				window.$test_elem = $('<span></span>').appendTo('body');
+				T.highlightElement.call(window.$test_elem);
+				expect(window.$test_elem.attr('style') === '').toEqual(false);
+			});
+			it('should unhighlight an element', function(){
+				window.$test_elem = $('<span></span>').appendTo('body');
+				T.highlightElement.call(window.$test_elem);
+				T.unHighlightElement.call(window.$test_elem);
+				expect(window.$test_elem.attr('style') === '').toEqual(true);
+			});
 			it('should highlight elements before debug', function(){
 				spyOn(T, 'highlightAllElements');
 				T.debug();
 				expect(T.highlightAllElements).toHaveBeenCalled();
 			});
-			it('should highlight elements in the tracked_elems array', function(){
+			it('should call highlight on each element in the tracked_elems array', function(){
 				spyOn(T, 'highlightElement');
 				T.tracked_elems = {
 					'X' : $('<span></span>').add($('<span></span>'))
@@ -207,12 +218,26 @@
 				T.highlightAllElements();
 				expect(T.highlightElement.callCount).toEqual(2);
 			});
-			// how to test CSS highlight? no idea.
+			it('unhighlights all elements', function(){
+				T.unHighlightAllElements();
+				T.undebug();
+			});
 			it('bind the debug hover style', function(){
 				window.$test_elem = $('<span></span>');
 				spyOn(window.$test_elem, 'hover');
 				T.bindDebugHover([], window.$test_elem, 'test');
 				expect(window.$test_elem.hover).toHaveBeenCalled();
+			});
+			it('leaves debug mode', function(){
+				T.debugging = true;
+				T.undebug();
+				expect(T.debugging).toEqual(false);
+			});
+			it('runs undebug when keycode 27 is fired', function(){
+				spyOn(T, 'undebug');
+				T.debugging = true;
+				T.leaveDebugIfEsc({keyCode : 27});
+				expect(T.undebug).toHaveBeenCalled();
 			});
 		});
 
@@ -303,6 +328,14 @@
 	/* @end */
 	
 	/* @group behaviors */
+
+		/* Coming soon */
+	
+	/* @end */
+
+	/* @group user-reported issues */
+
+		/* Coming soon */
 	
 	/* @end */
 

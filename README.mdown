@@ -1,4 +1,4 @@
-# Trackiffer 0.2.1 
+# Trackiffer 0.2.2 
 
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking GA events.
 
@@ -56,6 +56,8 @@ Debug mode will cancel all tracked clicks (so you stay on the current page) and 
 You can also do a quick debug by visiting the url in question with a #trackiffer_debug hash:
 
 	http://example.com/#trackiffer_debug
+
+Hit escape to remove the debugging outlines.
 
 ## Is Trackiffer broken?
 

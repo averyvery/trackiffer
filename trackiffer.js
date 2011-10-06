@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.2.1
+ * Trackiffer v0.2.2
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.2.1',
+			version : '0.2.2',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -222,7 +222,7 @@
 					_t.log('|    outbound event - firing after 100ms');
 					_t.executeDelayedAction(event_type, $elem);
 				};
-				$elem.unbind(event_type + '.trackiffer');
+				_t.debugging || $elem.unbind(event_type + '.trackiffer');
 				setTimeout(repeat_action, 100);
 			},
 		
@@ -297,7 +297,7 @@
 
 			debug_outlines : {
 				'highlight' : 'rgb(0,200,200) 3px solid',
-				'hover' : 'rgb(250,0,0) 3px solid'
+				'hover' : 'rgb(250,0,0) 3px solid',
 			},
 
 			checkHash : function(){
@@ -324,25 +324,43 @@
 				_t.log('+  debug mode');
 				_t.undefineGa();
 				_t.loadScript('http://www.google-analytics.com/u/ga_debug.js');
+				_t.debug_outlines.property = _t.is_oldbrowser ? 'border' : 'outline';
 				_t.highlightAllElements();
+				jQuery(window).keydown(_t.leaveDebugIfEsc);
+			},
+
+			undebug : function(){
+				_t.debugging = false;
+				_t.log('+  leaving debug mode');
+				_t.unHighlightAllElements();
 			},
 
 			highlightAllElements : function(){
+				_t.actOnAllElements(_t.highlightElement);
+			},
+
+			unHighlightAllElements : function(){
+				_t.actOnAllElements(_t.unHighlightElement);
+			},
+
+			actOnAllElements : function(method){
 				for(var rule in _t.tracked_elems){
 					if (_t.tracked_elems.hasOwnProperty(rule)) {
-						jQuery.each(_t.tracked_elems[rule], _t.highlightElement);
+						jQuery.each(_t.tracked_elems[rule], method);
 					}
 				}
 			},
 
+			unHighlightElement : function(){
+				jQuery(this).css(_t.debug_outlines.property, '');
+			},
+
 			highlightElement : function(){
-				var property = (_t.is_oldbrowser) ? 'border' : 'outline';
-				jQuery(this).css(property, _t.debug_outlines.highlight);
+				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.highlight);
 			},
 
 			hoverElement : function(){
-				var property = (_t.is_oldbrowser) ? 'border' : 'outline';
-				jQuery(this).css(property, _t.debug_outlines.hover);
+				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.hover);
 			},
 
 			bindDebugHover : function(event_data, $elem, selector){
@@ -357,6 +375,10 @@
 				}
 				_t.tracked_elems[selector] = _t.tracked_elems[selector].add($elem);
 				$elem.hover(hover_all, hover_none);
+			},
+
+			leaveDebugIfEsc : function(event){
+				event.keyCode === 27 && _t.undebug();
 			}
 
 		/* @end */
