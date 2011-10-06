@@ -330,8 +330,8 @@
 			},
 
 			undebug : function(){
-				_t.debugging = false;
 				_t.log('+  leaving debug mode');
+				_t.debugging = false;
 				_t.unHighlightAllElements();
 			},
 
