@@ -22,7 +22,7 @@ Add the trackiffer script to the end of your page's body tag, and call trackiffe
 	<script type="text/javascript" src="/js/trackiffer.min.js"></script>
 	<script type="text/javascript">
 		trackiffer({
-			'a.social-twitter' : ['Link', 'Social', 'Twitter']
+			'a.blog' : ['_trackEvent', 'Link', 'Social', 'Twitter']
 		});
 	</script>
 
