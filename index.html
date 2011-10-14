@@ -52,6 +52,7 @@
 				<p>
 					<a class="text" href="http://example.com">Link 1 Text</a>
 					<a class="title" title="Link 2 Title" href="http://example.com">Link 2 Text</a>
+					<a class="retweet" href="http://www.twitter.com/retweet/">Retweet</a>
 				</p>
 				<form action="http://example.com" class="simple" method="get">
 					<button type="submit">Submit</button>
@@ -63,10 +64,15 @@
 					<input type="text" class="simple" value="Text input" />
 				</p>
 				<p>
-					<select name="Select Name">
+					<select class="select" name="Select Name">
 						<option value="Select Option One">Select Option One</option>
 						<option value="Select Option Two">Select Option Two</option>
 						<option value="Select Option Three">Select Option Three</option>
+					</select>
+					<select class="gender" name="Select Gender">
+						<option value="Female">Female</option>
+						<option value="Male">Male</option>
+						<option value="Whatever">Whatever</option>
 					</select>
 				</p>
 			</div>
@@ -97,28 +103,36 @@
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
 		<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script>
-		<!--
 		<script type="text/javascript" src="trackiffer.js"></script>
-		-->
+		<!--
 		<script type="text/javascript" src="trackiffer.min.js"></script>
+		-->
 		<script type="text/javascript">
 
 			_gaq.push(['_setAccount', 'UA-111111111-1']);
 
 			trackiffer({
-				'.simple a.text'           : ['Link', 'Click', '#TEXT#'],
-				'.simple a.title'          : ['Link', 'Click', '#TITLE#'],
-				'.simple a.twomatches'     : ['Select', 'Form Element', '#TITLE# and #TEXT#', 40],
-				'.simple form'             : ['Form', 'Submit', 'Email Signup'],
-				'.simple select'           : ['Select', '#NAME#', '#VALUE#'],
-				'.simple input[type=text]' : ['Input', 'Type', "#VALUE#"]
+				'.simple a.text'           : ['_trackEvent', 'Link', 'Click', '#TEXT#'],
+				'.simple a.title'          : ['_trackEvent', 'Link', 'Click', '#TITLE#'],
+				'.simple a.twomatches'     : ['_trackEvent', 'Select', 'Form Element', '#TITLE# and #TEXT#', 40],
+				'.simple form'             : ['_trackEvent', 'Form', 'Submit', 'Email Signup'],
+				'.simple select.select'    : ['_trackEvent', 'Select', '#NAME#', '#VALUE#'],
+				'.simple input[type=text]' : ['_trackEvent', 'Input', 'Type', "#VALUE#"]
 			});
 
 			trackiffer({
-				'.advanced a.b-text'       : ['Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
-				'.advanced input'          : ['Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
+				'.advanced a.b-text'       : ['_trackEvent', 'Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
+				'.advanced input'          : ['_trackEvent', 'Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
 				'.advanced a[href*="example2.com"]:not([href*="example2.com/no-track"])' : 
-					['Advanced Link', 'Click', '#HREF#']
+					['_trackEvent', 'Advanced Link', 'Click', '#HREF#']
+			});
+
+			trackiffer({
+				'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '#HREF#', window.location.href]
+			});
+
+			trackiffer({
+				'select.gender' : ['_setCustomVar', 1, 'Gender', '#VALUE#', 2]
 			});
 
 			jQuery('#debug').click(function(event){

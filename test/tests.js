@@ -34,10 +34,6 @@
 				var event_data = T.formatData(['test'], $('<div></div>'));
 				expect(T.parseTokens).toHaveBeenCalled();
 			});
-			it('adds _trackEvent to the data', function(){
-				var event_data = T.formatData(['test'], $('<div></div>'));
-				expect(event_data[0]).toEqual('_trackEvent');
-			});
 			it('replaces #STRINGS# with element attributes', function(){
 				expect(T.getReplacement('#TITLE#', $('<a href="#" title="X"></a>'))).toEqual('X');
 			});
@@ -125,7 +121,6 @@
 				expect(T.getEventType($('<form></form>'))).toEqual('submit');
 				expect(T.getEventType($('<select></select>'))).toEqual('change');
 				expect(T.getEventType($('<input type="submit"></input>'))).toEqual('click');
-				expect(T.getEventType($('<input type="text"></input>'))).toEqual('blur');
 			});
 			it('binds an event', function(){
 				var $elem = $('<span></span>');

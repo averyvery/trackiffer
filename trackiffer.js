@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.2.2
+ * Trackiffer v0.2.3
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.2.2',
+			version : '0.2.3',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -34,8 +34,7 @@
 
 			event_types : {
 				'form' : 'submit',
-				'select' : 'change',
-				'input[type=text]' : 'blur'
+				'select' : 'change'
 			},
 
 			defineGa : function(){
@@ -112,8 +111,9 @@
 		/* @group formatting data */
 		
 			formatData : function(event_data, $elem){
-				var parsed_event_data = _t.parseTokens(event_data, $elem);
-				parsed_event_data.unshift('_trackEvent');
+				var method = event_data.shift(),
+					parsed_event_data = _t.parseTokens(event_data, $elem);
+				parsed_event_data.unshift(method);
 				return parsed_event_data;
 			},
 
@@ -139,10 +139,10 @@
 				for(var i = 0, data_length = event_data.length; i < data_length; i++){
 					var value = event_data[i],
 						safe_value,
-						should_be_string = (i !== 3);
+						is_string = typeof value === 'string';
 					if(typeof value === 'function'){
 						value = value($elem);
-					} else if(should_be_string){
+					} else if(is_string){
 						var pattern = /#.+?#/g,
 							match_array = value.match(pattern),
 							replacement,

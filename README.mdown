@@ -1,6 +1,9 @@
-# Trackiffer 0.2.2 
+# Trackiffer 0.2.3
 
-Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking GA events.
+Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking 
+(GA events)[http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html], 
+(social actions)[http://code.google.com/apis/analytics/docs/gaJS/gaJSApiSocialTracking.html], and 
+(setting custom vars)[http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html].
 
 It takes a simple set of CSS selectors and tracking rules, and tracks a wide variety of elements in a number of really cool ways.
 
@@ -29,10 +32,19 @@ I recommend renaming it to trackiffer-[sitename].min.js when using this method.
 ## Use
 
 	trackiffer({
-		'a' : ['Link', 'Social', '#TEXT#', 1],
-		'select' : ['Outbound', 'Social', '#VALUE#'],
-		'.comment_form' : ['Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
-		'.outbound_form' : ['#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
+
+		// _trackEvent
+		'a' : ['_trackEvent', 'Link', 'Social', '#TEXT#', 1],
+		'select' : ['_trackEvent', 'Outbound', 'Social', '#VALUE#'],
+		'.comment_form' : ['_trackEvent', 'Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
+		'.outbound_form' : ['_trackEvent', '#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
+
+		// _trackSocial
+		'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '#HREF#', window.location.href],
+
+		// _setCustomVar - remember to track an event after this, or the value won't be saved!
+		'select.gender' : ['_setCustomVar', 1, 'Gender', '#VALUE#', 2]
+
 	});
 
 The left side is the jQuery selector you'd like to use, and the right side is the event data you want to track.
