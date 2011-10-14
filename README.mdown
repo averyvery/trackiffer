@@ -1,9 +1,9 @@
 # Trackiffer 0.2.4
 
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking 
-(GA events)[http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html], 
-(social actions)[http://code.google.com/apis/analytics/docs/gaJS/gaJSApiSocialTracking.html], and 
-(setting custom vars)[http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html].
+[GA events](http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html), 
+[social actions](http://code.google.com/apis/analytics/docs/gaJS/gaJSApiSocialTracking.html), and 
+[setting custom vars](http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html).
 
 It takes a simple set of CSS selectors and tracking rules, and tracks a wide variety of elements in a number of really cool ways.
 
