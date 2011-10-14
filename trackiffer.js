@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.2.3
+ * Trackiffer v0.2.4
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.2.3',
+			version : '0.2.4',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -121,14 +121,14 @@
 				var replacement;
 				if(match){
 					switch(match){
-						case '#VALUE#':
+						case '{{value}}':
 							replacement = $elem.val();
 							break;
-						case '#TEXT#':
+						case '{{text}}':
 							replacement = $elem.text();
 							break;
 						default:
-							var attribute = match.replace(/\#/g, '').toLowerCase();
+							var attribute = match.replace(/\{\{/g, '').replace(/\}\}/g, '');
 							replacement = $elem.attr(attribute);
 					} 
 					return replacement;
@@ -143,7 +143,7 @@
 					if(typeof value === 'function'){
 						value = value($elem);
 					} else if(is_string){
-						var pattern = /#.+?#/g,
+						var pattern = /\{\{.+?\}\}/g,
 							match_array = value.match(pattern),
 							replacement,
 							trimmed_replacement;

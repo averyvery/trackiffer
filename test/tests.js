@@ -34,14 +34,14 @@
 				var event_data = T.formatData(['test'], $('<div></div>'));
 				expect(T.parseTokens).toHaveBeenCalled();
 			});
-			it('replaces #STRINGS# with element attributes', function(){
-				expect(T.getReplacement('#TITLE#', $('<a href="#" title="X"></a>'))).toEqual('X');
+			it('replaces {{strings}} with element attributes', function(){
+				expect(T.getReplacement('{{title}}', $('<a href="#" title="X"></a>'))).toEqual('X');
 			});
-			it('replaces #VALUE# with element value', function(){
-				expect(T.getReplacement('#VALUE#', $('<input value="X" />'))).toEqual('X');
+			it('replaces {{value}} with element value', function(){
+				expect(T.getReplacement('{{value}}', $('<input value="X" />'))).toEqual('X');
 			});
-			it('replaces #TEXT# with element text', function(){
-				expect(T.getReplacement('#TEXT#', $('<p>X</p>'))).toEqual('X');
+			it('replaces {{text}} with element text', function(){
+				expect(T.getReplacement('{{text}}', $('<p>X</p>'))).toEqual('X');
 			});
 			it('comments out quotes', function(){
 				expect(T.replaceBadCharacters("'test'")).toEqual("\\'test\\'");

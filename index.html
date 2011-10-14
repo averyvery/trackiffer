@@ -112,27 +112,27 @@
 			_gaq.push(['_setAccount', 'UA-111111111-1']);
 
 			trackiffer({
-				'.simple a.text'           : ['_trackEvent', 'Link', 'Click', '#TEXT#'],
-				'.simple a.title'          : ['_trackEvent', 'Link', 'Click', '#TITLE#'],
-				'.simple a.twomatches'     : ['_trackEvent', 'Select', 'Form Element', '#TITLE# and #TEXT#', 40],
+				'.simple a.text'           : ['_trackEvent', 'Link', 'Click', '{{text}}'],
+				'.simple a.title'          : ['_trackEvent', 'Link', 'Click', '{{title}}'],
+				'.simple a.twomatches'     : ['_trackEvent', 'Select', 'Form Element', '{{title}} and {{text}}', 40],
 				'.simple form'             : ['_trackEvent', 'Form', 'Submit', 'Email Signup'],
-				'.simple select.select'    : ['_trackEvent', 'Select', '#NAME#', '#VALUE#'],
-				'.simple input[type=text]' : ['_trackEvent', 'Input', 'Type', "#VALUE#"]
+				'.simple select.select'    : ['_trackEvent', 'Select', '{{name}}', '{{value}}'],
+				'.simple input[type=text]' : ['_trackEvent', 'Input', 'Type', '{{value}}']
 			});
 
 			trackiffer({
 				'.advanced a.b-text'       : ['_trackEvent', 'Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
 				'.advanced input'          : ['_trackEvent', 'Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
 				'.advanced a[href*="example2.com"]:not([href*="example2.com/no-track"])' : 
-					['_trackEvent', 'Advanced Link', 'Click', '#HREF#']
+					['_trackEvent', 'Advanced Link', 'Click', '{{href}}']
 			});
 
 			trackiffer({
-				'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '#HREF#', window.location.href]
+				'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '{{href}}', window.location.href]
 			});
 
 			trackiffer({
-				'select.gender' : ['_setCustomVar', 1, 'Gender', '#VALUE#', 2]
+				'select.gender' : ['_setCustomVar', 1, 'Gender', '{{value}}', 2]
 			});
 
 			jQuery('#debug').click(function(event){

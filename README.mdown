@@ -1,4 +1,4 @@
-# Trackiffer 0.2.3
+# Trackiffer 0.2.4
 
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking 
 (GA events)[http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html], 
@@ -34,26 +34,26 @@ I recommend renaming it to trackiffer-[sitename].min.js when using this method.
 	trackiffer({
 
 		// _trackEvent
-		'a' : ['_trackEvent', 'Link', 'Social', '#TEXT#', 1],
-		'select' : ['_trackEvent', 'Outbound', 'Social', '#VALUE#'],
-		'.comment_form' : ['_trackEvent', 'Outbound', 'Social', 'Left Sidebar - Twitter - #ACTION#'],
-		'.outbound_form' : ['_trackEvent', '#CLASS# Form', '#METHOD#', function(N){return N.find("input#agree").val()}]
+		'a' : ['_trackEvent', 'Link', 'Social', '{{text}}', 1],
+		'select' : ['_trackEvent', 'Outbound', 'Social', '{{value}}'],
+		'.comment_form' : ['_trackEvent', 'Outbound', 'Social', 'Left Sidebar - Twitter - {{action}}'],
+		'.outbound_form' : ['_trackEvent', '{{class}} Form', '{{method}}', function(N){return N.find("input#agree").val()}]
 
 		// _trackSocial
-		'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '#HREF#', window.location.href],
+		'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '{{href}}', window.location.href],
 
 		// _setCustomVar - remember to track an event after this, or the value won't be saved!
-		'select.gender' : ['_setCustomVar', 1, 'Gender', '#VALUE#', 2]
+		'select.gender' : ['_setCustomVar', 1, 'Gender', '{{value}}', 2]
 
 	});
 
 The left side is the jQuery selector you'd like to use, and the right side is the event data you want to track.
 	
-Any #TOKEN# will be replaced at the time of event:
+Any {{token}} will be replaced at the time of event:
 
-- #TEXT# by the result of $element.text();
-- #VALUE# by the result of $element.val();
-- #ANYTHING_ELSE# is replaced by the result of $element.attr('anything_else');
+- {{text}} by the result of $element.text();
+- {{value}} by the result of $element.val();
+- {{anything_else}} is replaced by the result of $element.attr('anything_else');
 
 In extreme cases, you can just pass callbacks instead of strings. This lets you do all kinds of fancy stuff - 
 in the example, we're recording the value of a particular input at the moment the form submits.
