@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.2.4
+ * Trackiffer v0.2.5
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.2.4',
+			version : '0.2.5',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -176,12 +176,19 @@
 
 		/* @group delay events */
 		
+			isDestinationOnPage : function(string){
+
+				return string && string.slice(0, 1) === '#'; 
+
+			},
+
 			isDestinationOutbound : function($elem){
 
 				var destination = $elem.attr('href') || $elem.attr('action'),
+					on_page = _t.isDestinationOnPage(destination),
 					is_outbound = false;
 
-				if(destination){
+				if(destination && on_page === false){
 				
 					var current_host = window.location.host,
 

@@ -56,11 +56,16 @@
 
 		describe('Delaying outbound actions', function(){
 			var T = trackiffer();
+			it('detects onpage string', function(){
+				expect(T.isDestinationOnPage('#next')).toEqual(true);
+				expect(T.isDestinationOnPage('hello')).toEqual(false);
+			});
 			it('detects outbound links', function(){
 				expect(T.isDestinationOutbound($('<a href="mailto:dougunderscorenelson"></a>'))).toEqual(true);
 				expect(T.isDestinationOutbound($('<a href="example.doc"></a>'))).toEqual(true);
 				expect(T.isDestinationOutbound($('<a href="http://example.com"></a>'))).toEqual(true);
 				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '"></a>'))).toEqual(false);
+				expect(T.isDestinationOutbound($('<a href="#next"></a>'))).toEqual(false);
 			});
 			it('detects non-outbound elements', function(){
 				expect(T.isDestinationOutbound($('<span></span>'))).toEqual(false);
