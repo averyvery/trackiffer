@@ -56,25 +56,23 @@
 
 		describe('Delaying outbound actions', function(){
 			var T = trackiffer();
-			it('detects onpage string', function(){
-				expect(T.isDestinationOnPage('#next')).toEqual(true);
-				expect(T.isDestinationOnPage('hello')).toEqual(false);
-			});
 			it('detects outbound links', function(){
 				expect(T.isDestinationOutbound($('<a href="mailto:dougunderscorenelson"></a>'))).toEqual(true);
 				expect(T.isDestinationOutbound($('<a href="example.doc"></a>'))).toEqual(true);
 				expect(T.isDestinationOutbound($('<a href="http://example.com"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '"></a>'))).toEqual(false);
+				expect(T.isDestinationOutbound($('<a href="http://localhost/somewhereelse"></a>'))).toEqual(true);
+				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '"></a>'))).toEqual(true);
+				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '#false"></a>'))).toEqual(true);
 				expect(T.isDestinationOutbound($('<a href="#next"></a>'))).toEqual(false);
 			});
 			it('detects non-outbound elements', function(){
 				expect(T.isDestinationOutbound($('<span></span>'))).toEqual(false);
 			});
 			it('detects outbound forms', function(){
+				expect(T.isDestinationOutbound($('<form action="#"></form>'))).toEqual(false);
 				expect(T.isDestinationOutbound($('<form action="http://example.com"></form>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<form action="' + window.location.href + '"></form>'))).toEqual(false);
+				expect(T.isDestinationOutbound($('<form action="' + window.location.href + '"></form>'))).toEqual(true);
 			});
-			// note: not able to test delay directly with spies? very strange
 			it('calls delayed clicks after 100ms', function(){
 				spyOn(T, 'executeDelayedAction');
 				T.executeDelayedAction('click', $('<a href="#"></a>'));

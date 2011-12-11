@@ -176,39 +176,10 @@
 
 		/* @group delay events */
 		
-			isDestinationOnPage : function(string){
-
-				return string && string.slice(0, 1) === '#'; 
-
-			},
-
 			isDestinationOutbound : function($elem){
 
-				var destination = $elem.attr('href') || $elem.attr('action'),
-					on_page = _t.isDestinationOnPage(destination),
-					is_outbound = false;
-
-				if(destination && on_page === false){
-				
-					var current_host = window.location.host,
-
-						// email link
-						mailto_matches = destination.match('mailto:'),
-						is_mailto = mailto_matches !== null,
-
-						// file
-						document_matches = destination.match(/\.(?:doc|eps|jpg|png|svg|xls|ppt|pdf|xls|zip|txt|vsd|vxd|js|css|rar|exe|wma|mov|avi|wmv|mp3)($|\&|\?)/),
-						is_document = document_matches !== null,
-
-						// external host
-						host_matches = destination.match(current_host),
-						is_other_host = host_matches === null;
-
-					is_outbound = is_other_host || is_mailto || is_document;
-
-				}
-
-				return !!is_outbound;
+				var destination = $elem.attr('href') || $elem.attr('action');
+				return !!(destination && destination.slice(0, 1) !== '#'); 
 
 			},
 
