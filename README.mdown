@@ -70,9 +70,9 @@ in the example, we're recording the value of a particular input at the moment th
 
 By assigning an object literal to your selector, you get two new options ('rule' is your event data, and it's required):
 
-- delay - by setting delay to @false@, you override trackiffer's default outbound behavior. The event will no longer cancel, and the user
+- delay - by setting delay to <code>false</code>, you override trackiffer's default outbound behavior. The event will no longer cancel, and the user
 will no longer be forwarded to a new URL after 100ms.
-- delegate - setting a @delegate@ option allows you to bind events to DOM elements that might not exist yet on the page. 
+- delegate - setting a <code>delegate</code> option allows you to bind events to DOM elements that might not exist yet on the page. 
 Read more about delegate [here](http://api.jquery.com/delegate/). At the moment, these links WILL NOT be hightlighted, but you can still
 test them by reading the console.
 
