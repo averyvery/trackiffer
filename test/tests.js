@@ -56,23 +56,6 @@
 
 		describe('Delaying outbound actions', function(){
 			var T = trackiffer();
-			it('detects outbound links', function(){
-				expect(T.isDestinationOutbound($('<a href="mailto:dougunderscorenelson"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="example.doc"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="http://example.com"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="http://localhost/somewhereelse"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="' + window.location.href + '#false"></a>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<a href="#next"></a>'))).toEqual(false);
-			});
-			it('detects non-outbound elements', function(){
-				expect(T.isDestinationOutbound($('<span></span>'))).toEqual(false);
-			});
-			it('detects outbound forms', function(){
-				expect(T.isDestinationOutbound($('<form action="#"></form>'))).toEqual(false);
-				expect(T.isDestinationOutbound($('<form action="http://example.com"></form>'))).toEqual(true);
-				expect(T.isDestinationOutbound($('<form action="' + window.location.href + '"></form>'))).toEqual(true);
-			});
 			it('calls delayed clicks after 100ms', function(){
 				spyOn(T, 'executeDelayedAction');
 				T.executeDelayedAction('click', $('<a href="#"></a>'));
@@ -125,10 +108,20 @@
 				expect(T.getEventType($('<select></select>'))).toEqual('change');
 				expect(T.getEventType($('<input type="submit"></input>'))).toEqual('click');
 			});
+			it('determine if array or not', function(){
+				expect(T.isArray([1,2,3])).toEqual(true);
+				expect(T.isArray({a:1,b:2})).toEqual(false);
+			});
 			it('binds an event', function(){
 				var $elem = $('<span></span>');
 				expect($elem.data('events')).toEqual(undefined);
 				T.bindEvent([], $elem); 
+				expect($elem.data('events')['click']).toNotEqual(undefined);
+			});
+			it('binds an event when given an object', function(){
+				var $elem = $('<span></span>');
+				expect($elem.data('events')).toEqual(undefined);
+				T.bindEvent({rule : []}, $elem); 
 				expect($elem.data('events')['click']).toNotEqual(undefined);
 			});
 			it('binds a _gaqpush', function(){
@@ -138,6 +131,39 @@
 				T.bindEvent(['_trackEvent', 'test', 'test'], $elem, 'span'); 
 				$elem.click();
 				expect(window._gaq.push).toHaveBeenCalled();
+			});
+			it('detects elements without urls', function(){
+				expect(T.elemHasUrl($('<form action="#"></form>'))).toEqual(false);
+				expect(T.elemHasUrl($('<form action="http://example.com"></form>'))).toEqual(true);
+				expect(T.elemHasUrl($('<a href="#"></a>'))).toEqual(false);
+				expect(T.elemHasUrl($('<a href="http://example.com"></a>'))).toEqual(true);
+			});
+			it('delays when delay is true', function(){
+				spyOn(T, 'delayAction');
+				var $elem = $('<a href="http://example.com"></a>');
+				T.bindEvent({delay : true, rule : []}, $elem); 
+				$elem.click();
+				expect(T.delayAction.callCount).toEqual(1);
+			});
+			it('doesn\'t delay when delay is false', function(){
+				spyOn(T, 'delayAction');
+				var $elem = $('<a href="http://example.com"></a>');
+				T.bindEvent({delay : false, rule : []}, $elem); 
+				$elem.click();
+				expect(T.delayAction.callCount).toEqual(0);
+			});
+			it('binds when delegate is false', function(){
+				var $elem = $('<a href="http://example.com"></a>');
+				spyOn($elem, 'bind').andCallThrough();
+				T.bindEvent({rule : [], delegate : false}, $elem, 'a'); 
+				expect($elem.bind.callCount).toEqual(3);
+			});
+			it('doesn\'t bind when delegate is set', function(){
+				var $elem = $('<a href="http://example.com"></a>');
+				spyOn($elem, 'bind').andCallThrough();
+				T.bindEvent({rule : [], delegate : 'body'}, $elem, 'a'); 
+				window.console && console.log && console.log($elem);
+				expect($elem.bind.callCount).toEqual(2);
 			});
 		});
 
@@ -223,7 +249,7 @@
 			it('bind the debug hover style', function(){
 				window.$test_elem = $('<span></span>');
 				spyOn(window.$test_elem, 'hover');
-				T.bindDebugHover([], window.$test_elem, 'test');
+				T.bindDebugHover(window.$test_elem, 'test');
 				expect(window.$test_elem.hover).toHaveBeenCalled();
 			});
 			it('leaves debug mode', function(){

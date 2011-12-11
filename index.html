@@ -20,7 +20,25 @@
 			input {
 				width: 300px;
 			}
+			pre {
+				background: #eee;
+				font-size: 12px;
+				padding: 10px;
+			}
 		</style>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+		<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script>
+		<script type="text/javascript" src="trackiffer.js"></script>
+		<!--
+		<script type="text/javascript" src="trackiffer.min.js"></script>
+		-->
+
+		<script type="text/javascript">
+
+			_gaq.push(['_setAccount', 'UA-111111111-1']);
+
+		</script>
 
 	</head>
 	<body title="Trackiffer's Body">
@@ -35,104 +53,92 @@
 			<p>To see the debugger in action, <a href="#" id="debug">click here.</a> or visit <a href="#trackiffer_debug">index.html/#trackiffer_debug</a> and refresh the page.</p>
 		</div>
 
-		<div class="simple">
-			<div class="section">
-				<h3>Internal Links &amp; Forms</h3>
+		<div>
+			<div class="section basic">
+				<h3>Basic Event Data</h3>
 				<p>
-					<a class="text" href="/">Link 1 Text</a>
-					<a class="title" title="Link 2 Title" href="/">Link 2 Text</a>
-					<a class="twomatches" title="Link 3 Title" href="/">Link 3 Text</a>
+					<a class="text" href="#">Link clicks are tracked</a>
+					<span title="The title of the span">Non-link clicks can be tracked</span>
 				</p>
-				<form action="/" class="simple" method="get">
+				<form action="http://example.com" class="simple" method="get">
+					<p>Form submissions and can be tracked</p>
 					<button type="submit">Submit</button>
 				</form>
-			</div>
-			<div class="section">
-				<h3>External Links &amp; Forms</h3>
 				<p>
-					<a class="text" href="http://example.com">Link 1 Text</a>
-					<a class="title" title="Link 2 Title" href="http://example.com">Link 2 Text</a>
-					<a class="retweet" href="http://www.twitter.com/retweet/">Retweet</a>
+					<div href="#" class="retweet">You can track several GA event types, like "_trackSocial"</div>
+				</p>
+				<pre>
+trackiffer({
+	'.basic a'             : ['_trackEvent', 'Link', 'Click', '{{text}}'],
+	'.basic span'          : ['_trackEvent', 'Span', 'Click', '{{title}}'],
+	'.basic form'          : ['_trackEvent', 'Form', 'Submit', 'Email Signup'],
+	'.basic select'        : ['_trackEvent', 'Select', '{{name}}', '{{value}}'],
+	'.basic .retweet'      : ['_trackSocial', 'Twitter', 'Retweet', '{{href}}', window.location.href]
+});</pre>
+			</div>
+			<div class="section advanced">
+				<h3>Advanced Data and Selection</h3>
+				<p>
+					<a href="http://example.com/" class="b-text">
+						Using some JS, you can set this link to record just the <b>bold text</b>
+					</a>
+				</p>
+				<p>
+					<a href="http://example2.com/track/" class="url-parse">With fancy selectors, you can track this "example.com" link...</a>
+				</p>
+				<p>
+					<a href="http://subdomain.example2.com/track/" class="url-parse">...and this "subdomain.example.com" one...</a>
+				</p>
+				<p>
+					<a href="http://example2.com/no-track/" class="url-parse">...but not this "example.com/no-track" one.</a>
+				</p>
+				<pre>
+trackiffer({
+	'.advanced a.b-text'       : ['_trackEvent', 'Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
+	'.advanced a[href*="example2.com"]:not([href*="example2.com/no-track"])' : 
+		['_trackEvent', 'Advanced Link', 'Click', '{{href}}']
+});</pre>
+			</div>
+			<div class="section delay">
+				<h3>100ms Delays</h3>
+				<p>
+					<a href="http://example.com">Outbound links and forms automatically delay 100ms, then forward users to href or action</a>
 				</p>
 				<form action="http://example.com" class="simple" method="get">
 					<button type="submit">Submit</button>
 				</form>
+				<pre>
+trackiffer({
+	'.delay a'       : ['_trackEvent', 'Delayed Link', 'Click', 'Should forward user 100ms after click'],
+	'.delay form'    : ['_trackEvent', 'Delayed Link', 'Submit', 'Should submit 100ms after click']
+});</pre>
 			</div>
-			<div class="section">
-				<h3>Form Elements</h3>
+			<div class="section config">
+				<h3>Configuration</h3>
 				<p>
-					<input type="text" class="simple" value="Text input" />
+					<a href="http://example.com" class="outbound">You can also configure outbound links NOT to delay and forward.</a>
 				</p>
-				<p>
-					<select class="select" name="Select Name">
-						<option value="Select Option One">Select Option One</option>
-						<option value="Select Option Two">Select Option Two</option>
-						<option value="Select Option Three">Select Option Three</option>
-					</select>
-					<select class="gender" name="Select Gender">
-						<option value="Female">Female</option>
-						<option value="Male">Male</option>
-						<option value="Whatever">Whatever</option>
-					</select>
-				</p>
-			</div>
-		</div>
-
-		<div class="advanced">
-			<div class="section">
-				<h3>Advanced Tracking</h3>
-				<p>
-					<a href="http://example.com/" class="b-text">
-						Visit Our <b>Blog</b>
-					</a>
-				</p>
-				<p>
-					<input type="text" placeholder="Round a number before tracking" />
-				</p>
-				<p>
-					<a href="http://example2.com/track/" class="url-parse">example.com/track</a>
-				</p>
-				<p>
-					<a href="http://subdomain.example2.com/track/" class="url-parse">subdomain.example.com/track</a>
-				</p>
-				<p>
-					<a href="http://example2.com/no-track/" class="url-parse">example.com/no-track</a>
-				</p>
+				<pre>
+trackiffer({
+	'.config a.outbound' : {
+		delay : false,
+		rule : ['_trackEvent', 'Not Delayed', 'Click', 'Should _not_ forward user user 100ms after click']
+	},
+	'a.delegated' : {
+		delegate : '.config',
+		rule : ['_trackEvent', 'Delayed Link', 'Click', 'Should detect links added to the page after execution time']
+	}
+});
+$('.config pre')
+	.before('<a href="http://example.com" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>');
+</pre>
 			</div>
 		</div>
 
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
-		<script type="text/javascript" src="http://www.google-analytics.com/u/ga_debug.js"></script>
-		<script type="text/javascript" src="trackiffer.js"></script>
-		<!--
-		<script type="text/javascript" src="trackiffer.min.js"></script>
-		-->
 		<script type="text/javascript">
 
-			_gaq.push(['_setAccount', 'UA-111111111-1']);
-
-			trackiffer({
-				'.simple a.text'           : ['_trackEvent', 'Link', 'Click', '{{text}}'],
-				'.simple a.title'          : ['_trackEvent', 'Link', 'Click', '{{title}}'],
-				'.simple a.twomatches'     : ['_trackEvent', 'Select', 'Form Element', '{{title}} and {{text}}', 40],
-				'.simple form'             : ['_trackEvent', 'Form', 'Submit', 'Email Signup'],
-				'.simple select.select'    : ['_trackEvent', 'Select', '{{name}}', '{{value}}'],
-				'.simple input[type=text]' : ['_trackEvent', 'Input', 'Type', '{{value}}']
-			});
-
-			trackiffer({
-				'.advanced a.b-text'       : ['_trackEvent', 'Advanced Link', 'Click', function(N){ return N.find('b').text(); }],
-				'.advanced input'          : ['_trackEvent', 'Advanced Input', 'Type', 'Rounded Up To Hundred', function(N){ return Math.ceil(parseInt(N.val(), 10)/100) * 100; }],
-				'.advanced a[href*="example2.com"]:not([href*="example2.com/no-track"])' : 
-					['_trackEvent', 'Advanced Link', 'Click', '{{href}}']
-			});
-
-			trackiffer({
-				'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '{{href}}', window.location.href]
-			});
-
-			trackiffer({
-				'select.gender' : ['_setCustomVar', 1, 'Gender', '{{value}}', 2]
+			$('pre').each(function(){
+				eval(this.innerHTML);
 			});
 
 			jQuery('#debug').click(function(event){

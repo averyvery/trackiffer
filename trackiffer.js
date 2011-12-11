@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.2.5
+ * Trackiffer v0.3
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.2.5',
+			version : '0.3',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -176,19 +176,11 @@
 
 		/* @group delay events */
 		
-			isDestinationOutbound : function($elem){
-
-				var destination = $elem.attr('href') || $elem.attr('action');
-				return !!(destination && destination.slice(0, 1) !== '#'); 
-
-			},
-
 			executeDelayedAction : function(event_type, $elem){
 				var elem = $elem.get(0);
 				if(_t.debugging !== true){
-					$elem.trigger(event_type);
 					elem.submit && elem.submit();
-					if(event_type === 'click' && $elem.hasClass('nofollow') === false){
+					if(event_type === 'click'){
 						window.location = $elem[0].href;
 					}
 				}
@@ -245,26 +237,56 @@
 				return event_type;
 			},
 
-			bindEvent : function(event_data, $elem, selector){
-				var event_type = _t.getEventType($elem),
+			isArray : function(obj){
+			
+				return obj.constructor.toString().indexOf("Array") !== -1;
+			},
+
+			elemHasUrl : function($elem){
+
+				var url = $elem.attr('action') || $elem.attr('href'),
+					url_is_not_hash = url && url.slice(0) !== '#';
+
+				return url && url_is_not_hash;
+			
+			},
+
+			bindEvent : function(rule_or_event_data, $elem, selector){
+
+				var event_data = {
+						delay : true,
+						delegate : false,
+						rule : rule_or_event_data,
+						type : _t.getEventType($elem)
+					}, 
 					handler = function(event){
 						_t.log('');
-						_t.log('+  ' + event_type + ' on ' + selector);
-						var stored_event_data = _t.formatData(event_data.slice(0), $elem),
-							is_outbound = _t.isDestinationOutbound($elem);
+						_t.log('+  ' + event_data.type + ' on ' + selector);
+						var formatted_event_data = _t.formatData(event_data.rule.slice(0), $elem);
 						_t.log('|    parsing ', event_data);
 						_t.log('v    ');
-						window._gaq.push(stored_event_data);
+						window._gaq.push(formatted_event_data);
 						_t.log('^    ');
-						if (is_outbound){
+						if (event_data.delay && _t.elemHasUrl($elem)){
 							_t.log('|    outbound event - delaying');
-							_t.delayAction(event, event_type, $elem, handler);
+							_t.delayAction(event, event_data.type, $elem, handler);
 						} else if(_t.debugging){
 							return false;
 						}
 					};
-				_t.bindDebugHover(event_data, $elem, selector);
-				$elem.bind(event_type + '.trackiffer', handler);
+
+				if(_t.isArray(rule_or_event_data) === false){
+					event_data = $.extend(event_data, rule_or_event_data);
+				}
+
+				if(event_data.delegate){
+					$(event_data.delegate).delegate(selector, event_data.type + '.trackiffer', handler);
+				} else {
+					$elem.bind(event_data.type + '.trackiffer', handler);
+				}
+
+				_t.bindDebugHover($elem, selector);
+
 			},
 		
 		/* @end */
@@ -341,7 +363,7 @@
 				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.hover);
 			},
 
-			bindDebugHover : function(event_data, $elem, selector){
+			bindDebugHover : function($elem, selector){
 				var hover_all = function(){
 					_t.debugging && _t.tracked_elems[selector].each(_t.hoverElement);
 				},
