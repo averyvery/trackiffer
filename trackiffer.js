@@ -265,19 +265,34 @@
 						type : _t.getEventType($elem)
 					}, 
 					handler = function(event){
+
 						_t.log('');
-						_t.log('+  ' + event_data.type + ' on ' + selector);
+
+						if(event_data.delegate){
+							_t.log('+  ' + event_data.type + ' on ' + event_data.delegate + ' delegated from ' + selector);
+						} else {
+							_t.log('+  ' + event_data.type + ' on ' + selector);
+						}
+
 						var formatted_event_data = _t.formatData(event_data.rule.slice(0), $elem);
+
 						_t.log('|    parsing ', event_data);
+
 						_t.log('v    ');
 						window._gaq.push(formatted_event_data);
 						_t.log('^    ');
+
 						if (event_data.delay && _t.elemHasUrl($elem)){
+
 							_t.log('|    outbound event - delaying');
 							_t.delayAction(event, event_data.type, $elem, handler);
+
 						} else if(_t.debugging){
+
 							return false;
+
 						}
+
 					};
 
 				if(_t.isArray(rule_or_event_data) === false){
