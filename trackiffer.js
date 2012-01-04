@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3
+ * Trackiffer v0.3.1
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3',
+			version : '0.3.1',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -31,6 +31,8 @@
 			},
 
 			tracked_elems : {},
+
+			delegated_elems : {},
 
 			event_types : {
 				'form' : 'submit',
@@ -218,11 +220,14 @@
 			},
 
 			bindRulesToSelector : function(selector){
-				var $elems = jQuery(selector);
-				$elems.each(function(i){
-					i === 0 && _t.log('|    ' + $elems.length + 'x ' + selector);
-					_t.bindEvent(_t.rules[selector], jQuery(this), selector);
-				});
+				var $elems = jQuery(selector),
+					rule = _t.rules[selector],
+					logAndBind = function(i){
+						i === 0 && _t.log('|    ' + $elems.length + 'x ' + selector);
+						_t.bindEvent(rule, jQuery(this), selector);
+					};
+				$elems.each(logAndBind);
+				rule && rule.delegate && logAndBind(0);
 			},
 
 			getEventType : function($elem){
@@ -280,12 +285,12 @@
 				}
 
 				if(event_data.delegate){
-					$(event_data.delegate).delegate(selector, event_data.type + '.trackiffer', handler);
+					$elem.delegate(event_data.delegate, event_data.type + '.trackiffer', handler);
 				} else {
 					$elem.bind(event_data.type + '.trackiffer', handler);
 				}
 
-				_t.bindDebugHover($elem, selector);
+				_t.bindDebugHover($elem, selector, event_data.delegate);
 
 			},
 		
@@ -298,6 +303,8 @@
 			debug_outlines : {
 				'highlight' : 'rgb(0,200,200) 3px solid',
 				'hover' : 'rgb(250,0,0) 3px solid',
+				'highlight_delegated' : 'rgba(0,200,200, 0.3) 6px solid',
+				'hover_delegated' : 'rgba(250,0,0, 0.3) 6px solid'
 			},
 
 			checkHash : function(){
@@ -336,17 +343,27 @@
 			},
 
 			highlightAllElements : function(){
-				_t.actOnAllElements(_t.highlightElement);
+				_t.actOnTrackedElements(_t.highlightElement);
+				_t.actOnDelegatedElements(_t.highlightDelegatedElement);
 			},
 
 			unHighlightAllElements : function(){
-				_t.actOnAllElements(_t.unHighlightElement);
+				_t.actOnTrackedElements(_t.unHighlightElement);
+				_t.actOnDelegatedElements(_t.unHighlightElement);
 			},
 
-			actOnAllElements : function(method){
+			actOnTrackedElements : function(method){
 				for(var rule in _t.tracked_elems){
 					if (_t.tracked_elems.hasOwnProperty(rule)) {
 						jQuery.each(_t.tracked_elems[rule], method);
+					}
+				}
+			},
+
+			actOnDelegatedElements : function(method){
+				for(var rule in _t.delegated_elems){
+					if (_t.delegated_elems.hasOwnProperty(rule)) {
+						jQuery.each(_t.delegated_elems[rule], method);
 					}
 				}
 			},
@@ -363,17 +380,26 @@
 				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.hover);
 			},
 
-			bindDebugHover : function($elem, selector){
-				var hover_all = function(){
-					_t.debugging && _t.tracked_elems[selector].each(_t.hoverElement);
-				},
-				hover_none = function(){
-					_t.debugging && _t.tracked_elems[selector].each(_t.highlightElement);
-				};
-				if(typeof _t.tracked_elems[selector] === 'undefined'){
-					_t.tracked_elems[selector] = jQuery();
-				}
-				_t.tracked_elems[selector] = _t.tracked_elems[selector].add($elem);
+			highlightDelegatedElement : function(){
+				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.highlight_delegated);
+			},
+
+			hoverDelegatedElement : function(){
+				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.hover_delegated);
+			},
+
+			bindDebugHover : function($elem, selector, delegated){
+				var elem_list = delegated ? _t.delegated_elems : _t.tracked_elems, 
+					hover_all = function(){
+						_t.debugging && elem_list[selector].each(delegated ? _t.hoverDelegatedElement : _t.hoverElement);
+					},
+					hover_none = function(){
+						_t.debugging && elem_list[selector].each(delegated ? _t.highlightDelegatedElement : _t.highlightElement);
+					};
+					if(typeof elem_list[selector] === 'undefined'){
+						elem_list[selector] = jQuery();
+					}
+				elem_list[selector] = elem_list[selector].add($elem);
 				$elem.hover(hover_all, hover_none);
 			},
 

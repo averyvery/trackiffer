@@ -113,24 +113,32 @@ trackiffer({
 	'.delay form'    : ['_trackEvent', 'Delayed Link', 'Submit', 'Should submit 100ms after click']
 });</pre>
 			</div>
-			<div class="section config">
-				<h3>Configuration</h3>
-				<p>
-					<a href="http://example.com" class="outbound">You can also configure outbound links NOT to delay and forward.</a>
-				</p>
+			<div class="section">
+				<div class="config">
+					<h3>Configuration</h3>
+					<p>
+						<a href="http://example.com" class="outbound">You can also configure outbound links NOT to delay and forward.</a>
+					</p>
+				</div>
+				<script type="text/javascript">
+					var delegate_link = '<a href="http://example.com" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>';
+				</script>
 				<pre>
 trackiffer({
 	'.config a.outbound' : {
 		delay : false,
 		rule : ['_trackEvent', 'Not Delayed', 'Click', 'Should _not_ forward user user 100ms after click']
 	},
-	'a.delegated' : {
-		delegate : '.config',
+	'.config' : {
+		delegate : 'a.delegated',
 		rule : ['_trackEvent', 'Delayed Link', 'Click', 'Should detect links added to the page after execution time']
 	}
 });
-$('.config pre')
-	.before('<a href="http://example.com" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>');
+setTimeout(function(){
+	var delegate_link_example = 
+		'&lt;a href="http://example.com" class="delegated"&gt;You can also use \'delegate\' to track links that don\'t exist at execution time.&lt;/a&gt;';
+	$('.config p').before(delegate_link);
+}, 1000);
 </pre>
 			</div>
 		</div>

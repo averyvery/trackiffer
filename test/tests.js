@@ -162,8 +162,13 @@
 				var $elem = $('<a href="http://example.com"></a>');
 				spyOn($elem, 'bind').andCallThrough();
 				T.bindEvent({rule : [], delegate : 'body'}, $elem, 'a'); 
-				window.console && console.log && console.log($elem);
 				expect($elem.bind.callCount).toEqual(2);
+			});
+			it('delegates when told', function(){
+				var $body = $('body');
+				spyOn($body, 'delegate').andCallThrough();
+				T.bindEvent({rule : [], delegate : 'a'}, $body, 'body'); 
+				expect($body.delegate.callCount).toEqual(1);
 			});
 		});
 
@@ -241,6 +246,14 @@
 				};
 				T.highlightAllElements();
 				expect(T.highlightElement.callCount).toEqual(2);
+			});
+			it('acts on tracked AND delegated objects', function(){
+				spyOn(T, 'actOnTrackedElements');
+				spyOn(T, 'actOnDelegatedElements');
+				T.unHighlightAllElements();
+				T.highlightAllElements();
+				expect(T.actOnTrackedElements.callCount).toEqual(2);
+				expect(T.actOnDelegatedElements.callCount).toEqual(2);
 			});
 			it('unhighlights all elements', function(){
 				T.unHighlightAllElements();

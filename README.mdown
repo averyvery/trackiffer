@@ -1,4 +1,4 @@
-# Trackiffer 0.3
+# Trackiffer 0.3.1
 
 Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking 
 [GA events](http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html), 
@@ -61,9 +61,9 @@ in the example, we're recording the value of a particular input at the moment th
 ## Extra Configuration
 
 	trackiffer({
-		'a' : {
+		'body' : {
 			delay : false,
-			delegate : 'body',
+			delegate : 'a',
 			rule : ['_trackEvent', 'Link', 'Social', '{{text}}', 1]
 		}
 	});
@@ -73,8 +73,8 @@ By assigning an object literal to your selector, you get two new options ('rule'
 - delay - by setting delay to <code>false</code>, you override trackiffer's default outbound behavior. The event will no longer cancel, and the user
 will no longer be forwarded to a new URL after 100ms.
 - delegate - setting a <code>delegate</code> option allows you to bind events to DOM elements that might not exist yet on the page. 
-Read more about delegate [here](http://api.jquery.com/delegate/). At the moment, these links WILL NOT be highlighted, but you can still
-test them by interacting and reading the console.
+Read more about delegate [here](http://api.jquery.com/delegate/). At the moment, these links WILL NOT be highlighted, but their element you delegate
+from will have a faint highlight. You can still test these elements by interacting with them and reading the console.
 
 ## Debug mode
 
