@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.2
+ * Trackiffer v0.3.3
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,14 +19,14 @@
 
 		/* @group setup */
 		
-			version : '0.3.2',
+			version : '0.3.3',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
 				(navigator.userAgent.indexOf('MSIE 7') != -1),
 
 			jquery : {
-				'min_version' : '1.4.0',
+				'min_version' : '1.5.0',
 				'loaded' : false
 			},
 
@@ -46,7 +46,7 @@
 			init : function(){
 				_t.defineGa();
 				_t.checkjQuery();
-				setTimeout(_t.checkHash, 1500);
+				setTimeout(_t.checkHash, 500);
 			},
 
 			rules : {},
@@ -316,6 +316,8 @@
 
 			debugging : false,
 
+			debug_wait_count : 0,
+
 			debug_outlines : {
 				'highlight' : 'rgb(0,200,200) 3px solid',
 				'hover' : 'rgb(250,0,0) 3px solid',
@@ -325,9 +327,28 @@
 
 			checkHash : function(){
 				_t.debugging = window.location.hash === '#trackiffer_debug';
-				_t.debugging && _t.debug();
+				if(_t.debugging){
+					_t.log('+  debug hash detected');
+					setTimeout(_t.debugAfterGALoads, 1000);
+				}
 			},
-		
+
+			debugAfterGALoads : function(){
+				_t.log('|    waiting for GA to load before debugging...');
+				var is_loaded = _gaq !== 'undefined' && _t.isArray(_gaq) === false;
+				if(is_loaded){
+					_t.log('|    GA has loaded');
+					_t.log('');
+					_t.debug();
+				} else if (_t.debug_wait_count < 19){
+					setTimeout(_t.debugAfterGALoads, 500);
+					_t.debug_wait_count++;
+				} else {
+					_t.log('|    looks like GA isn\'t going to load');
+					_t.log('|    shut it down');
+				}
+			},
+
 			log : function(){
 				if(_t.debugging && typeof console === 'object' && console.log){
 					var args = Array.prototype.slice.call(arguments); 

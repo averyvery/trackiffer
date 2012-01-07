@@ -176,14 +176,40 @@
 			var T = trackiffer();
 			it('runs debug when hash is set', function(){
 				window.location.hash = '#trackiffer_debug';
-				spyOn(T, 'debug');
+				spyOn(window, 'setTimeout');
 				T.checkHash();
+				expect(window.setTimeout).toHaveBeenCalled();
+			});
+			it('skips debug when hash is NOT set', function(){
+				window.location.hash = '#test';
+				spyOn(window, 'setTimeout');
+				T.checkHash();
+				expect(window.setTimeout.callCount).toEqual(0);
+			});
+			it('debugs once GA has loaded', function(){
+				window._gaq = {};
+				spyOn(T, 'debug');
+				T.debugAfterGALoads();
 				expect(T.debug).toHaveBeenCalled();
 			});
-			it('runs debug when hash is set', function(){
-				window.location.hash = '#test';
+			it('does not debug until GA has loaded', function(){
+				window._gaq = [];
 				spyOn(T, 'debug');
-				T.checkHash();
+				T.debugAfterGALoads();
+				expect(T.debug.callCount).toEqual(0);
+			});
+			it('continies to check after 19 attempts', function(){
+				T.debug_wait_count = 19;
+				spyOn(window, 'setTimeout');
+				T.debugAfterGALoads();
+				expect(window.setTimeout.callCount).toEqual(0);
+			});
+			it('exits after 20 attempts', function(){
+				T.debug_wait_count = 21;
+				spyOn(T, 'debug');
+				spyOn(window, 'setTimeout');
+				T.debugAfterGALoads();
+				expect(window.setTimeout.callCount).toEqual(0);
 				expect(T.debug.callCount).toEqual(0);
 			});
 			it('ducks log so we can track it', function(){
