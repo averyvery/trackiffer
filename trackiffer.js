@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.1
+ * Trackiffer v0.3.2
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3.1',
+			version : '0.3.2',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -45,8 +45,8 @@
 
 			init : function(){
 				_t.defineGa();
-				_t.checkHash();
 				_t.checkjQuery();
+				setTimeout(_t.checkHash, 1500);
 			},
 
 			rules : {},
@@ -58,10 +58,11 @@
 			loadScript : function(src){
 				_t.log('|    loading ' + src);
 				var new_script = document.createElement('script'),
-					first_script = document.getElementsByTagName('script')[0]; 
+					all_scripts = document.getElementsByTagName('script'),
+					last_script = all_scripts[all_scripts.length - 1];
 				new_script.type = 'text/javascript';
 				new_script.src = src;
-				first_script.parentNode.insertBefore(new_script, first_script);
+				last_script.parentNode.insertBefore(new_script, last_script.nextSibling);
 			},
 		
 			checkjQuery : function(){
