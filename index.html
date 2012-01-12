@@ -118,7 +118,7 @@ trackiffer({
 					</p>
 				</div>
 				<script type="text/javascript">
-					var delegate_link = '<a href="http://example.com" data-event="Delegated Click" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>';
+					var delegate_link = '<a href="#" data-event="Delegated Click" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>';
 					var delegate_form = '<form action="http://example.com" data-event="Delegated Submit"><input type="submit" /></form>';
 				</script>
 				<pre>
@@ -131,6 +131,8 @@ trackiffer({
 		delegate : 'a.delegated',
 		rule : ['_trackEvent', 'Delegated link', '{{data-event}}', 'Should detect links added to the page after execution time']
 	},
+});
+trackiffer({
 	'.config' : {
 		delegate : 'form',
 		type : 'submit',
