@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.3
+ * Trackiffer v0.3.4
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3.3',
+			version : '0.3.4',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -70,7 +70,7 @@
 				_t.log('+ checking for jQuery');
 				if(_t.isjQueryVersionHighEnough() === false){
 					_t.log('|    jQuery version too low');
-					_t.loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js');
+					_t.loadScript('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js');
 					_t.polljQueryVersion();
 				} else {
 					_t.log('|    jQuery present');
@@ -92,8 +92,8 @@
 				var version = (typeof window.jQuery === 'function') && jQuery.fn.jquery || '0',
 					normalized_version = _t.normalizeVersion(version),
 					normalized_min = _t.normalizeVersion(_t.jquery.min_version),
-					is_high_enough = normalized_version > normalized_min;
-				is_high_enough || _t.log('|    wrong version: ' + version + ' (needs to be > ' + _t.jquery.min_version + ')');
+					is_high_enough = normalized_version >= normalized_min;
+				is_high_enough || _t.log('|    wrong version: ' + version + ' (needs to be >= ' + _t.jquery.min_version + ')');
 				return is_high_enough;
 			},
 
@@ -259,13 +259,19 @@
 
 			bindEvent : function(rule_or_event_data, $elem, selector){
 
-				var event_data = {
+				var is_rule = _t.isArray(rule_or_event_data), 
+					rule = is_rule ? rule_or_event_data : rule_or_event_data.rule, 
+					event_data_settings = is_rule ? {} : rule_or_event_data, 
+					event_data_defaults = {
 						delay : true,
 						delegate : false,
-						rule : rule_or_event_data,
-						type : _t.getEventType($elem)
+						rule : rule,
+						type : rule.delegate ? 'click' : _t.getEventType($elem)
 					}, 
+					event_data = $.extend(event_data_defaults, event_data_settings), 
 					handler = function(event){
+
+						var $target_elem = $(this);
 
 						_t.log('');
 
@@ -275,7 +281,7 @@
 							_t.log('+  ' + event_data.type + ' on ' + selector);
 						}
 
-						var formatted_event_data = _t.formatData(event_data.rule.slice(0), $elem);
+						var formatted_event_data = _t.formatData(event_data.rule.slice(0), $target_elem);
 
 						_t.log('|    parsing ', event_data);
 
@@ -283,10 +289,10 @@
 						window._gaq.push(formatted_event_data);
 						_t.log('^    ');
 
-						if (event_data.delay && _t.elemHasUrl($elem)){
+						if (event_data.delay && _t.elemHasUrl($target_elem)){
 
 							_t.log('|    outbound event - delaying');
-							_t.delayAction(event, event_data.type, $elem, handler);
+							_t.delayAction(event, event_data.type, $target_elem, handler);
 
 						} else if(_t.debugging){
 
@@ -295,10 +301,6 @@
 						}
 
 					};
-
-				if(_t.isArray(rule_or_event_data) === false){
-					event_data = $.extend(event_data, rule_or_event_data);
-				}
 
 				if(event_data.delegate){
 					$elem.delegate(event_data.delegate, event_data.type + '.trackiffer', handler);

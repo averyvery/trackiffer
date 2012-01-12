@@ -114,27 +114,36 @@ trackiffer({
 				<div class="config">
 					<h3>Configuration</h3>
 					<p>
-						<a href="http://example.com" class="outbound">You can also configure outbound links NOT to delay and forward.</a>
+						<a href="http://example.com" data-event="Click" class="outbound">You can also configure outbound links NOT to delay and forward.</a>
 					</p>
 				</div>
 				<script type="text/javascript">
-					var delegate_link = '<a href="http://example.com" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>';
+					var delegate_link = '<a href="http://example.com" data-event="Delegated Click" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>';
+					var delegate_form = '<form action="http://example.com" data-event="Delegated Submit"><input type="submit" /></form>';
 				</script>
 				<pre>
 trackiffer({
 	'.config a.outbound' : {
 		delay : false,
-		rule : ['_trackEvent', 'Not Delayed', 'Click', 'Should _not_ forward user user 100ms after click']
+		rule : ['_trackEvent', 'Normal link', '{{data-event}}', 'Should _not_ forward user user 100ms after click']
 	},
 	'.config' : {
 		delegate : 'a.delegated',
-		rule : ['_trackEvent', 'Delayed Link', 'Click', 'Should detect links added to the page after execution time']
+		rule : ['_trackEvent', 'Delegated link', '{{data-event}}', 'Should detect links added to the page after execution time']
+	},
+	'.config' : {
+		delegate : 'form',
+		type : 'submit',
+		rule : ['_trackEvent', 'Delegated form', '{{data-event}}', 'Should delegate a form submit']
 	}
 });
 setTimeout(function(){
 	var delegate_link_example = 
-		'&lt;a href="http://example.com" class="delegated"&gt;You can also use \'delegate\' to track links that don\'t exist at execution time.&lt;/a&gt;';
+		'&lt;a href="http://example.com" data-event="Delegated Click" class="delegated"&gt;You can also use \'delegate\' to track links that don\'t exist at execution time.&lt;/a&gt;';
+	var delegate_form_example = 
+		'&lt;form action="http://example.com" data-event="Delegated Submit"&gt;&lt;input type="submit" /&gt;&lt;/form&gt;';
 	$('.config p').before(delegate_link);
+	$('.config p').before(delegate_form);
 }, 1000);
 </pre>
 			</div>
