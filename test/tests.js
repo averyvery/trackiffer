@@ -101,6 +101,17 @@
 				T.bindRulesToSelector('a.trackiffer_test'); 
 				expect(T.bindEvent.callCount).toEqual(3);
 			});
+			it('handles event', function(){
+				var handler = T.handleEvent();
+				expect(typeof handler).toEqual('function');
+			});
+			it('delays event when href or action is not onpage', function(){
+				var handler = T.handleEvent({delay : true, rule : []});
+				spyOn(T, 'delayAction');
+				spyOn(T, 'elemHasUrl').andReturn(true);
+				handler();
+				expect(T.delayAction).toHaveBeenCalled();
+			});
 			it('gets appropriate event type from element', function(){
 				expect(T.getEventType($('<a href="#"></a>'))).toEqual('click');
 				expect(T.getEventType($('<span></span>'))).toEqual('click');

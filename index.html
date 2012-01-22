@@ -118,7 +118,7 @@ trackiffer({
 					</p>
 				</div>
 				<script type="text/javascript">
-					var delegate_link = '<a href="#" data-event="Delegated Click" class="delegated">You can also use \'delegate\' to track links that don\'t exist at execution time.</a>';
+					var delegate_link = '<a href="#" data-event="Delegated Click" class="delegated">\'delegate\' items that don\'t exist at execution time.</a>';
 					var delegate_form = '<form action="http://example.com" data-event="Delegated Submit"><input type="submit" /></form>';
 				</script>
 				<pre>
@@ -141,7 +141,7 @@ trackiffer({
 });
 setTimeout(function(){
 	var delegate_link_example = 
-		'&lt;a href="http://example.com" data-event="Delegated Click" class="delegated"&gt;You can also use \'delegate\' to track links that don\'t exist at execution time.&lt;/a&gt;';
+		'&lt;a href="http://example.com" data-event="Delegated Click" class="delegated"&gt;\'delegate\' items that don\'t exist at execution time.&lt;/a&gt;';
 	var delegate_form_example = 
 		'&lt;form action="http://example.com" data-event="Delegated Submit"&gt;&lt;input type="submit" /&gt;&lt;/form&gt;';
 	$('.config p').before(delegate_link);

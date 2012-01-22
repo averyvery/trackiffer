@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.4
+ * Trackiffer v0.3.5
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3.4',
+			version : '0.3.5',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -193,7 +193,7 @@
 				event.preventDefault();
 				var repeat_action = function(){
 					_t.log('|    outbound event - firing after 100ms');
-					_t.executeDelayedAction(event_type, $elem);
+					_t.debugging || _t.executeDelayedAction(event_type, $elem);
 				};
 				_t.debugging || $elem.unbind(event_type + '.trackiffer');
 				setTimeout(repeat_action, 100);
@@ -268,39 +268,8 @@
 						rule : rule,
 						type : rule.delegate ? 'click' : _t.getEventType($elem)
 					}, 
-					event_data = $.extend(event_data_defaults, event_data_settings), 
-					handler = function(event){
-
-						var $target_elem = $(this);
-
-						_t.log('');
-
-						if(event_data.delegate){
-							_t.log('+  ' + event_data.type + ' on ' + event_data.delegate + ' delegated from ' + selector);
-						} else {
-							_t.log('+  ' + event_data.type + ' on ' + selector);
-						}
-
-						var formatted_event_data = _t.formatData(event_data.rule.slice(0), $target_elem);
-
-						_t.log('|    parsing ', event_data);
-
-						_t.log('v    ');
-						window._gaq.push(formatted_event_data);
-						_t.log('^    ');
-
-						if (event_data.delay && _t.elemHasUrl($target_elem)){
-
-							_t.log('|    outbound event - delaying');
-							_t.delayAction(event, event_data.type, $target_elem, handler);
-
-						} else if(_t.debugging){
-
-							return false;
-
-						}
-
-					};
+					event_data = $.extend(event_data_defaults, event_data_settings),
+					handler = _t.handleEvent(event_data, selector); 
 
 				if(event_data.delegate){
 					$elem.delegate(event_data.delegate, event_data.type + '.trackiffer', handler);
@@ -310,6 +279,36 @@
 
 				_t.bindDebugHover($elem, selector, event_data.delegate);
 
+			},
+
+			handleEvent : function(event_data, selector){
+
+				return function(event){
+				
+					var $target_elem = $(this),
+						log_message = '+  ' + event_data.type + ' on ',
+						formatted_event_data = _t.formatData(event_data.rule.slice(0), $target_elem);
+
+					log_message += (event_data.delegate) ? event_data.delegate + ' delegated from ' + selector : selector
+
+					_t.log(log_message);
+					_t.log('|    parsing ', event_data);
+					_t.log('v    ');
+					window._gaq.push(formatted_event_data);
+					_t.log('^    ');
+
+					if (event_data.delay && _t.elemHasUrl($target_elem)){
+						_t.log('|    outbound event - delaying');
+						_t.delayAction(event, event_data.type, $target_elem, _t.handleEvent(event_data, selector));
+					} else {
+						_t.log('|    tracked');
+						if (_t.debugging){
+							return false;
+						}
+					}
+
+				}
+			
 			},
 		
 		/* @end */
