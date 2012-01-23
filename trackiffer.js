@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.6
+ * Trackiffer v0.3.7
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3.6',
+			version : '0.3.7',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -167,7 +167,7 @@
 			},
 
 			replaceBadCharacters : function(string){
-				if(string.replace){
+				if(string && string.replace){
 					string = string.replace(/,/g, '\\,');
 					string = string.replace(/"/g, '\\\"');
 					string = string.replace(/'/g, '\\\'');
