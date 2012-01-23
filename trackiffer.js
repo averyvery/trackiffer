@@ -268,7 +268,7 @@
 						rule : rule,
 						type : rule.delegate ? 'click' : _t.getEventType($elem)
 					}, 
-					event_data = $.extend(event_data_defaults, event_data_settings),
+					event_data = jQuery.extend(event_data_defaults, event_data_settings),
 					handler = _t.handleEvent(event_data, selector); 
 
 				if(event_data.delegate){
