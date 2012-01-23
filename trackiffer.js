@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.5
+ * Trackiffer v0.3.6
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3.5',
+			version : '0.3.6',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -285,7 +285,7 @@
 
 				return function(event){
 				
-					var $target_elem = $(this),
+					var $target_elem = jQuery(this),
 						log_message = '+  ' + event_data.type + ' on ',
 						formatted_event_data = _t.formatData(event_data.rule.slice(0), $target_elem);
 
