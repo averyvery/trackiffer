@@ -89,8 +89,6 @@ You can also do a quick debug by visiting the url in question with a #trackiffer
 
 	http://example.com/#trackiffer_debug
 
-Hit escape to remove the debugging outlines.
-
 ## Is Trackiffer broken?
 
 MAYBE! Trackiffer is very new and relatively untested in the wild.

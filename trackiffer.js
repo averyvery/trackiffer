@@ -374,7 +374,6 @@
 				_t.undefineGa();
 				_t.loadScript('http://www.google-analytics.com/u/ga_debug.js');
 				_t.highlightAllElements();
-				jQuery(window).keydown(_t.leaveDebugIfEsc);
 			},
 
 			undebug : function(){
@@ -446,10 +445,6 @@
 					}
 				elem_list[selector] = elem_list[selector].add($elem);
 				$elem.hover(hover_all, hover_none);
-			},
-
-			leaveDebugIfEsc : function(event){
-				event.keyCode === 27 && _t.undebug();
 			}
 
 		/* @end */

@@ -331,12 +331,6 @@
 				T.undebug();
 				expect(T.debugging).toEqual(false);
 			});
-			it('runs undebug when keycode 27 is fired', function(){
-				spyOn(T, 'undebug');
-				T.debugging = true;
-				T.leaveDebugIfEsc({keyCode : 27});
-				expect(T.undebug).toHaveBeenCalled();
-			});
 		});
 
 		describe('Requirements', function(){
