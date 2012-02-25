@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.3.7
+ * Trackiffer v0.4
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -19,7 +19,7 @@
 
 		/* @group setup */
 		
-			version : '0.3.7',
+			version : '0.4',
 
 			is_oldbrowser : 
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
@@ -44,9 +44,11 @@
 			},
 
 			init : function(){
+				_t.debug_outlines.property = _t.is_oldbrowser ? 'border' : 'outline';
+				_t.checkDebugSetting();
 				_t.defineGa();
 				_t.checkjQuery();
-				setTimeout(_t.checkHash, 500);
+				_t.debugging && _t.debugAfterGALoads();
 			},
 
 			rules : {},
@@ -155,7 +157,7 @@
 								replacement = _t.getReplacement(match_array[ii], $elem);
 								if(replacement){
 									trimmed_replacement = jQuery.trim(replacement);
-									value = value.replace(pattern, trimmed_replacement);
+									value = value.replace(match_array[ii], trimmed_replacement);
 								}
 							}
 						}
@@ -326,11 +328,13 @@
 				'hover_delegated' : 'rgba(250,0,0, 0.3) 6px solid'
 			},
 
-			checkHash : function(){
-				_t.debugging = window.location.hash === '#trackiffer_debug';
+			checkDebugSetting : function(){
+				var hash_is_set = window.location.hash === '#trackiffer_debug',
+					var_is_set = window.trackiffer_debug; 
+				_t.debugging = hash_is_set || var_is_set;
 				if(_t.debugging){
-					_t.log('+  debug hash detected');
-					setTimeout(_t.debugAfterGALoads, 1000);
+					hash_is_set && _t.log('+  debug hash detected');
+					var_is_set && _t.log('+  debug var detected');
 				}
 			},
 
@@ -369,7 +373,6 @@
 				_t.log('+  debug mode');
 				_t.undefineGa();
 				_t.loadScript('http://www.google-analytics.com/u/ga_debug.js');
-				_t.debug_outlines.property = _t.is_oldbrowser ? 'border' : 'outline';
 				_t.highlightAllElements();
 				jQuery(window).keydown(_t.leaveDebugIfEsc);
 			},
@@ -407,23 +410,27 @@
 			},
 
 			unHighlightElement : function(){
-				jQuery(this).css(_t.debug_outlines.property, '');
+				_t.styleElement(this, '');
 			},
 
 			highlightElement : function(){
-				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.highlight);
+				_t.styleElement(this, 'highlight');
 			},
 
 			hoverElement : function(){
-				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.hover);
+				_t.styleElement(this, 'hover');
 			},
 
 			highlightDelegatedElement : function(){
-				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.highlight_delegated);
+				_t.styleElement(this, 'highlight_delegated');
 			},
 
 			hoverDelegatedElement : function(){
-				jQuery(this).css(_t.debug_outlines.property, _t.debug_outlines.hover_delegated);
+				_t.styleElement(this, 'hover_delegated');
+			},
+
+			styleElement : function(elem, style){
+				jQuery(elem).css(_t.debug_outlines.property, _t.debug_outlines[style]);
 			},
 
 			bindDebugHover : function($elem, selector, delegated){

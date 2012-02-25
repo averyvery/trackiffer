@@ -20,6 +20,10 @@
 				spyOn(T, 'trackRules');
 				expect(T.trackRules.callCount).toEqual(0);
 			});
+			it('returns version number when asked', function(){
+				T.version = 'foo';
+				expect(T.version).toEqual('foo');
+			});
 			it('calls trackRules when passed object', function(){
 				spyOn(T, 'trackRules');
 				trackiffer({});
@@ -33,6 +37,9 @@
 				spyOn(T, 'parseTokens').andCallThrough();
 				var event_data = T.formatData(['test'], $('<div></div>'));
 				expect(T.parseTokens).toHaveBeenCalled();
+			});
+			it('parses each token separately', function(){
+				expect(T.parseTokens(['{{href}} - {{text}}'], $('<a href="foo">bar</a>'))).toEqual(['foo - bar']);
 			});
 			it('replaces {{strings}} with element attributes', function(){
 				expect(T.getReplacement('{{title}}', $('<a href="#" title="X"></a>'))).toEqual('X');
@@ -185,17 +192,27 @@
 
 		describe('Debugging', function(){
 			var T = trackiffer();
-			it('runs debug when hash is set', function(){
+			it('sets debug when hash is set', function(){
+				T.debugging = false;
 				window.location.hash = '#trackiffer_debug';
 				spyOn(window, 'setTimeout');
-				T.checkHash();
-				expect(window.setTimeout).toHaveBeenCalled();
+				T.checkDebugSetting();
+				expect(T.debugging).toEqual(true);
 			});
-			it('skips debug when hash is NOT set', function(){
-				window.location.hash = '#test';
+			it('sets debug when debug var is set', function(){
+				T.debugging = false;
+				window.location.hash = '#trackiffer_debug';
 				spyOn(window, 'setTimeout');
-				T.checkHash();
-				expect(window.setTimeout.callCount).toEqual(0);
+				T.checkDebugSetting();
+				expect(T.debugging).toEqual(true);
+			});
+			it('sets debug when hash and debug var are NOT set', function(){
+				T.debugging = false;
+				window.location.hash = '#test';
+				window.trackiffer_debug = undefined;
+				spyOn(window, 'setTimeout');
+				T.checkDebugSetting();
+				expect(T.debugging).toEqual(undefined);
 			});
 			it('debugs once GA has loaded', function(){
 				window._gaq = {};
@@ -260,16 +277,23 @@
 				T.debug();
 				expect(T.loadScript).toHaveBeenCalled();
 			});
+			it('should style an element', function(){
+				window.$test_elem = $('<span></span>');
+				window.$test_elem.css(T.debug_outlines.property, '');
+				T.styleElement(window.$test_elem, 'highlight');
+				expect(window.$test_elem.css(T.debug_outlines.property) === '').toEqual(false);
+			});
 			it('should highlight an element', function(){
 				window.$test_elem = $('<span></span>').appendTo('body');
+				spyOn(T, 'styleElement');
 				T.highlightElement.call(window.$test_elem);
-				expect(window.$test_elem.attr('style') === '').toEqual(false);
+				expect(T.styleElement.callCount).toEqual(1);
 			});
 			it('should unhighlight an element', function(){
 				window.$test_elem = $('<span></span>').appendTo('body');
-				T.highlightElement.call(window.$test_elem);
+				spyOn(T, 'styleElement');
 				T.unHighlightElement.call(window.$test_elem);
-				expect(window.$test_elem.attr('style') === '').toEqual(true);
+				expect(T.styleElement.callCount).toEqual(1);
 			});
 			it('should highlight elements before debug', function(){
 				spyOn(T, 'highlightAllElements');
