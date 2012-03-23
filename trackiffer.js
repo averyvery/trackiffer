@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.4
+ * Trackiffer v0.4.1
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -253,9 +253,9 @@
 			elemHasUrl : function($elem){
 
 				var url = $elem.attr('action') || $elem.attr('href'),
-					url_is_not_hash = url && url.slice(0) !== '#';
+					url_is_not_hash = url && url.slice(0, 1) !== '#';
 
-				return url && url_is_not_hash;
+				return !!(url && url_is_not_hash);
 			
 			},
 

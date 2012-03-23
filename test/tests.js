@@ -188,6 +188,22 @@
 				T.bindEvent({rule : [], delegate : 'a'}, $body, 'body'); 
 				expect($body.delegate.callCount).toEqual(1);
 			});
+			it('detects elements with URLs', function(){
+				window.console.log && console.log && console.log(' ======= ');
+				var $elem = $('<a href="http://example.com"></a>');
+				expect(T.elemHasUrl($elem)).toEqual(true);
+				var $elem = $('<a href="http://example.com#hello"></a>');
+				expect(T.elemHasUrl($elem)).toEqual(true);
+				window.console.log && console.log && console.log(' ======= ');
+			});
+			it('detects elements without URLs', function(){
+				window.console.log && console.log && console.log(' ======= ');
+				var $elem = $('<div></div>');
+				expect(T.elemHasUrl($elem)).toEqual(false);
+				var $elem = $('<a href="#hello"></a>');
+				expect(T.elemHasUrl($elem)).toEqual(false);
+				window.console.log && console.log && console.log(' ======= ');
+			});
 		});
 
 		describe('Debugging', function(){
