@@ -30,7 +30,7 @@
 				expect(T.trackRules).toHaveBeenCalled();
 			});
 		});
-	
+
 		describe('Data Formatting', function(){
 			var T = trackiffer();
 			it('parses tokens', function(){
@@ -58,6 +58,18 @@
 			});
 			it('comments out commas', function(){
 				expect(T.replaceBadCharacters('test,test')).toEqual('test\\,test');
+			});
+			it('replaces extraneous spaces with single spaces', function(){
+				expect(T.replaceBadCharacters('test   test   test')).toEqual('test test test');
+			});
+			it('removes linebreaks', function(){
+				expect(T.replaceBadCharacters('   \ntest\ntest\r  ')).toEqual('test test');
+			});
+			it('removes leading spaces', function(){
+				expect(T.replaceBadCharacters('    test')).toEqual('test');
+			});
+			it('removes trailing spaces', function(){
+				expect(T.replaceBadCharacters('test        ')).toEqual('test');
 			});
 		});
 
@@ -105,7 +117,7 @@
 					$('body').append('<a href="#" class="trackiffer_test"></a>');
 				};
 				spyOn(T, 'bindEvent');
-				T.bindRulesToSelector('a.trackiffer_test'); 
+				T.bindRulesToSelector('a.trackiffer_test');
 				expect(T.bindEvent.callCount).toEqual(3);
 			});
 			it('handles event', function(){
@@ -133,20 +145,20 @@
 			it('binds an event', function(){
 				var $elem = $('<span></span>');
 				expect($elem.data('events')).toEqual(undefined);
-				T.bindEvent([], $elem); 
+				T.bindEvent([], $elem);
 				expect($elem.data('events')['click']).toNotEqual(undefined);
 			});
 			it('binds an event when given an object', function(){
 				var $elem = $('<span></span>');
 				expect($elem.data('events')).toEqual(undefined);
-				T.bindEvent({rule : []}, $elem); 
+				T.bindEvent({rule : []}, $elem);
 				expect($elem.data('events')['click']).toNotEqual(undefined);
 			});
 			it('binds a _gaqpush', function(){
 				var $elem = $('<span></span>');
 				T.debugging = false;
 				spyOn(window._gaq, 'push');
-				T.bindEvent(['_trackEvent', 'test', 'test'], $elem, 'span'); 
+				T.bindEvent(['_trackEvent', 'test', 'test'], $elem, 'span');
 				$elem.click();
 				expect(window._gaq.push).toHaveBeenCalled();
 			});
@@ -159,33 +171,33 @@
 			it('delays when delay is true', function(){
 				spyOn(T, 'delayAction');
 				var $elem = $('<a href="http://example.com"></a>');
-				T.bindEvent({delay : true, rule : []}, $elem); 
+				T.bindEvent({delay : true, rule : []}, $elem);
 				$elem.click();
 				expect(T.delayAction.callCount).toEqual(1);
 			});
 			it('doesn\'t delay when delay is false', function(){
 				spyOn(T, 'delayAction');
 				var $elem = $('<a href="http://example.com"></a>');
-				T.bindEvent({delay : false, rule : []}, $elem); 
+				T.bindEvent({delay : false, rule : []}, $elem);
 				$elem.click();
 				expect(T.delayAction.callCount).toEqual(0);
 			});
 			it('binds when delegate is false', function(){
 				var $elem = $('<a href="http://example.com"></a>');
 				spyOn($elem, 'bind').andCallThrough();
-				T.bindEvent({rule : [], delegate : false}, $elem, 'a'); 
+				T.bindEvent({rule : [], delegate : false}, $elem, 'a');
 				expect($elem.bind.callCount).toEqual(3);
 			});
 			it('doesn\'t bind when delegate is set', function(){
 				var $elem = $('<a href="http://example.com"></a>');
 				spyOn($elem, 'bind').andCallThrough();
-				T.bindEvent({rule : [], delegate : 'body'}, $elem, 'a'); 
+				T.bindEvent({rule : [], delegate : 'body'}, $elem, 'a');
 				expect($elem.bind.callCount).toEqual(2);
 			});
 			it('delegates when told', function(){
 				var $body = $('body');
 				spyOn($body, 'delegate').andCallThrough();
-				T.bindEvent({rule : [], delegate : 'a'}, $body, 'body'); 
+				T.bindEvent({rule : [], delegate : 'a'}, $body, 'body');
 				expect($body.delegate.callCount).toEqual(1);
 			});
 			it('detects elements with URLs', function(){
@@ -260,7 +272,7 @@
 				window.saved_console = window.console;
 				window.console = {
 					'log' : function(){
-						var args = Array.prototype.slice.call(arguments); 
+						var args = Array.prototype.slice.call(arguments);
 						window.console.logs.push(args);
 					},
 					'logs' : []
@@ -422,37 +434,37 @@
 			});
 			it('sets jquery to loaded', function(){
 				T.jquery.loaded = false;
-				T.jQueryHasLoaded(); 
+				T.jQueryHasLoaded();
 				expect(T.jquery.loaded).toEqual(true);
 			});
 			it('calls bindrules when jquery loads', function(){
 				spyOn(T, 'bindRules');
 				expect(T.bindRules.callCount).toEqual(0);
-				T.jQueryHasLoaded(); 
+				T.jQueryHasLoaded();
 				expect(T.bindRules.callCount).toEqual(1);
 			});
 		});
-	
+
 	/* @end */
-	
+
 	/* @group behaviors */
 
 		/* Coming soon */
-	
+
 	/* @end */
 
 	/* @group user-reported issues */
 
 		/* Coming soon */
-	
+
 	/* @end */
 
 	/* @group init */
-	
+
 		jasmine.getEnv().addReporter( new jasmine.TrivialReporter() );
 		jasmine.getEnv().execute();
-	
+
 	/* @end */
-	
+
 })();
 

@@ -1,5 +1,5 @@
 /*
- * Trackiffer v0.4.1
+ * Trackiffer v0.4.2
  * Easy GA event tracking and debugging
  * https://github.com/averyvery/trackiffer
  *
@@ -18,10 +18,10 @@
 	var _t = {
 
 		/* @group setup */
-		
-			version : '0.4',
 
-			is_oldbrowser : 
+			version : '0.4.2',
+
+			is_oldbrowser :
 				(navigator.userAgent.indexOf('MSIE 6') != -1) ||
 				(navigator.userAgent.indexOf('MSIE 7') != -1),
 
@@ -54,9 +54,9 @@
 			rules : {},
 
 		/* @end */
-		
+
 		/* @group requirements */
-		
+
 			loadScript : function(src){
 				_t.log('|    loading ' + src);
 				var new_script = document.createElement('script'),
@@ -66,7 +66,7 @@
 				new_script.src = src;
 				last_script.parentNode.insertBefore(new_script, last_script.nextSibling);
 			},
-		
+
 			checkjQuery : function(){
 				_t.log('');
 				_t.log('+ checking for jQuery');
@@ -112,9 +112,9 @@
 			},
 
 		/* @end */
-		
+
 		/* @group formatting data */
-		
+
 			formatData : function(event_data, $elem){
 				var method = event_data.shift(),
 					parsed_event_data = _t.parseTokens(event_data, $elem);
@@ -135,7 +135,7 @@
 						default:
 							var attribute = match.replace(/\{\{/g, '').replace(/\}\}/g, '');
 							replacement = $elem.attr(attribute);
-					} 
+					}
 					return replacement;
 				}
 			},
@@ -173,14 +173,16 @@
 					string = string.replace(/,/g, '\\,');
 					string = string.replace(/"/g, '\\\"');
 					string = string.replace(/'/g, '\\\'');
+					string = string.replace(/\s{2,}|\n|\r/g, ' ');
+					string = string.replace(/^\s+|\s+$/g, '');
 				}
 				return string;
 			},
-		
+
 		/* @end */
 
 		/* @group delay events */
-		
+
 			executeDelayedAction : function(event_type, $elem){
 				var elem = $elem.get(0);
 				if(_t.debugging !== true){
@@ -200,11 +202,11 @@
 				_t.debugging || $elem.unbind(event_type + '.trackiffer');
 				setTimeout(repeat_action, 100);
 			},
-		
+
 		/* @end */
-		
+
 		/* @group binding */
-		
+
 			trackRules : function(rules){
 				_t.rules = rules;
 				_t.jquery.loaded ? _t.bindRules() : _t.log('|    delaying init until jQuery loads');
@@ -246,7 +248,7 @@
 			},
 
 			isArray : function(obj){
-			
+
 				return obj.constructor.toString().indexOf("Array") !== -1;
 			},
 
@@ -256,22 +258,22 @@
 					url_is_not_hash = url && url.slice(0, 1) !== '#';
 
 				return !!(url && url_is_not_hash);
-			
+
 			},
 
 			bindEvent : function(rule_or_event_data, $elem, selector){
 
-				var is_rule = _t.isArray(rule_or_event_data), 
-					rule = is_rule ? rule_or_event_data : rule_or_event_data.rule, 
-					event_data_settings = is_rule ? {} : rule_or_event_data, 
+				var is_rule = _t.isArray(rule_or_event_data),
+					rule = is_rule ? rule_or_event_data : rule_or_event_data.rule,
+					event_data_settings = is_rule ? {} : rule_or_event_data,
 					event_data_defaults = {
 						delay : true,
 						delegate : false,
 						rule : rule,
 						type : rule.delegate ? 'click' : _t.getEventType($elem)
-					}, 
+					},
 					event_data = jQuery.extend(event_data_defaults, event_data_settings),
-					handler = _t.handleEvent(event_data, selector); 
+					handler = _t.handleEvent(event_data, selector);
 
 				if(event_data.delegate){
 					$elem.delegate(event_data.delegate, event_data.type + '.trackiffer', handler);
@@ -286,7 +288,7 @@
 			handleEvent : function(event_data, selector){
 
 				return function(event){
-				
+
 					var $target_elem = jQuery(this),
 						log_message = '+  ' + event_data.type + ' on ',
 						formatted_event_data = _t.formatData(event_data.rule.slice(0), $target_elem);
@@ -310,11 +312,11 @@
 					}
 
 				}
-			
+
 			},
-		
+
 		/* @end */
-		
+
 		/* @group debug */
 
 			debugging : false,
@@ -330,7 +332,7 @@
 
 			checkDebugSetting : function(){
 				var hash_is_set = window.location.hash === '#trackiffer_debug',
-					var_is_set = window.trackiffer_debug; 
+					var_is_set = window.trackiffer_debug;
 				_t.debugging = hash_is_set || var_is_set;
 				if(_t.debugging){
 					hash_is_set && _t.log('+  debug hash detected');
@@ -356,12 +358,12 @@
 
 			log : function(){
 				if(_t.debugging && typeof console === 'object' && console.log){
-					var args = Array.prototype.slice.call(arguments); 
+					var args = Array.prototype.slice.call(arguments);
 					args.unshift('');
 					console.log.apply(console, args);
 				}
 			},
-		
+
 			undefineGa : function(){
 				_t.log('|    unsetting existing GA');
 				window._gat = undefined;
@@ -433,7 +435,7 @@
 			},
 
 			bindDebugHover : function($elem, selector, delegated){
-				var elem_list = delegated ? _t.delegated_elems : _t.tracked_elems, 
+				var elem_list = delegated ? _t.delegated_elems : _t.tracked_elems,
 					hover_all = function(){
 						_t.debugging && elem_list[selector].each(delegated ? _t.hoverDelegatedElement : _t.hoverElement);
 					},
@@ -452,7 +454,7 @@
 	};
 
 	window.trackiffer = function(argument){
-		
+
 		var is_rules = typeof argument === 'object',
 			is_method = typeof _t[argument] === 'function',
 			return_data = _t;
@@ -463,7 +465,7 @@
 			return_data = _t[argument]();
 		} else if(argument){
 			return_data = _t[argument];
-		} 
+		}
 
 		return return_data;
 

@@ -1,13 +1,13 @@
-# Trackiffer 0.4.1
+# Trackiffer 0.4.2
 
-Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking 
-[GA events](http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html), 
-[social actions](http://code.google.com/apis/analytics/docs/gaJS/gaJSApiSocialTracking.html), and 
+Trackiffer is a dead-simple, yet suprisingly powerful, drop-in script for tracking
+[GA events](http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html),
+[social actions](http://code.google.com/apis/analytics/docs/gaJS/gaJSApiSocialTracking.html), and
 [setting custom vars](http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html).
 
 It takes a simple set of CSS selectors and tracking rules, and tracks a wide variety of elements in a number of really cool ways.
 
-So what does it handle for you? 
+So what does it handle for you?
 
 - Tracking events on forms (submit), select elements (change), text inputs (blur), and anything else (click).
 - Provides a super-helpful debug mode you can use for setting up your events.
@@ -26,7 +26,7 @@ Add the trackiffer script to the end of your page's body tag, and call trackiffe
 		});
 	</script>
 
-Alternately, you can add your tracking code to the bottom of trackiffer.min.js and deploy that file on its own. 
+Alternately, you can add your tracking code to the bottom of trackiffer.min.js and deploy that file on its own.
 I recommend renaming it to trackiffer-[sitename].min.js when using this method.
 
 ## Use
@@ -48,14 +48,14 @@ I recommend renaming it to trackiffer-[sitename].min.js when using this method.
 	});
 
 The left side is the jQuery selector you'd like to use, and the right side is the event data you want to track.
-	
+
 Any {{token}} will be replaced at the time of event:
 
 - {{text}} by the result of $element.text();
 - {{value}} by the result of $element.val();
 - {{anything_else}} is replaced by the result of $element.attr('anything_else');
 
-In extreme cases, you can just pass callbacks instead of strings. This lets you do all kinds of fancy stuff - 
+In extreme cases, you can just pass callbacks instead of strings. This lets you do all kinds of fancy stuff -
 in the example, we're recording the value of a particular input at the moment the form submits.
 
 ## Extra Configuration
@@ -73,18 +73,18 @@ By assigning an object literal to your selector, you get two new options ('rule'
 
 - delay - by setting delay to <code>false</code>, you override trackiffer's default outbound behavior. The event will no longer cancel, and the user
 will no longer be forwarded to a new URL after 100ms.
-- delegate - setting a <code>delegate</code> option allows you to bind events to DOM elements that might not exist yet on the page. 
+- delegate - setting a <code>delegate</code> option allows you to bind events to DOM elements that might not exist yet on the page.
 Read more about delegate [here](http://api.jquery.com/delegate/). At the moment, these links WILL NOT be highlighted, but their element you delegate
 from will have a faint highlight. You can still test these elements by interacting with them and reading the console.
 - type - only set this if you're delegating and want to track a non-<code>click</code> event. Examples might be <code>submit</code>, <code>update</code>.
 
 ## Debug mode
 
-You definitely want to run Trackiffer in debug mode to test this all out. It's simple:  
+You definitely want to run Trackiffer in debug mode to test this all out. It's simple:
 
 	trackiffer('debug');
 
-Debug mode will cancel all tracked clicks (so you stay on the current page) and log tons of cool info in the console. 
+Debug mode will cancel all tracked clicks (so you stay on the current page) and log tons of cool info in the console.
 You can also do a quick debug by visiting the url in question with a #trackiffer_debug hash:
 
 	http://example.com/#trackiffer_debug
@@ -93,17 +93,17 @@ You can also do a quick debug by visiting the url in question with a #trackiffer
 
 MAYBE! Trackiffer is very new and relatively untested in the wild.
 If you experience issues, please report them [on the issues page](https://github.com/averyvery/trackiffer/issues).
-	
+
 ## Bookmarklet
 
-Once you download Trackiffer, you can install the bookmarklet from the index.html page. 
+Once you download Trackiffer, you can install the bookmarklet from the index.html page.
 This will drop trackiffer onto any page you view and set debug mode - you can then execute and test trackiffer({rules}) from your browser's console.
 
 ## Why does this exist?
 
 The Viget marketing people are awesome - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
 
-The problem? This means we set up event tracking twice per site, and it's not a very repeatable or simple process....at least, until now. 
+The problem? This means we set up event tracking twice per site, and it's not a very repeatable or simple process....at least, until now.
 
 I wanted to make a script that handled all the messy aspects of tracking, and enabled our GA wizards simply put together a ruleset and deploy, maybe even without developer help.
 
