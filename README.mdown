@@ -22,7 +22,7 @@ Add the trackiffer script to the end of your page's body tag, and call trackiffe
 	<script type="text/javascript" src="/js/trackiffer.min.js"></script>
 	<script type="text/javascript">
 		trackiffer({
-			'a.blog' : ['_trackEvent', 'Link', 'Social', 'Twitter']
+			'a.blog' : ['event', 'Link', 'Social', 'Twitter']
 		});
 	</script>
 
@@ -32,19 +32,20 @@ I recommend renaming it to trackiffer-[sitename].min.js when using this method.
 ## Use
 
 	trackiffer({
+		// virtual pageview
+		'a.virtual' : ['pageview', '/path/for/virtual/pageview'],
 
-		// _trackEvent
-		'a' : ['_trackEvent', 'Link', 'Social', '{{text}}', 1],
-		'select' : ['_trackEvent', 'Outbound', 'Social', '{{value}}'],
-		'.comment_form' : ['_trackEvent', 'Outbound', 'Social', 'Left Sidebar - Twitter - {{action}}'],
-		'.outbound_form' : ['_trackEvent', '{{class}} Form', '{{method}}', function(N){return N.find("input#agree").val()}]
+		// event tracking
+		'a' : ['event', 'Link', 'Social', '{{text}}', 1],
+		'select' : ['event', 'Outbound', 'Social', '{{value}}'],
+		'.comment_form' : ['event', 'Outbound', 'Social', 'Left Sidebar - Twitter - {{action}}'],
+		'.outbound_form' : ['event', '{{class}} Form', '{{method}}', function(N){return N.find("input#agree").val()}]
 
-		// _trackSocial
-		'.retweet' : ['_trackSocial', 'Twitter', 'Retweet', '{{href}}', window.location.href],
+		// social tracking
+		'.retweet' : ['social', 'Twitter', 'Retweet', '{{href}}', window.location.href],
 
-		// _setCustomVar - remember to track an event after this, or the value won't be saved!
-		'select.gender' : ['_setCustomVar', 1, 'Gender', '{{value}}', 2]
-
+		// custom variables - remember to track something (event/pageview/etc) after this, or the value won't be visible to analytics!
+		'select.gender' : ['dimension1', '{{value}}']
 	});
 
 The left side is the jQuery selector you'd like to use, and the right side is the event data you want to track.
@@ -65,7 +66,7 @@ in the example, we're recording the value of a particular input at the moment th
 			delay : false,
 			delegate : 'form',
 			type : 'submit'
-			rule : ['_trackEvent', 'Link', 'Social', '{{text}}', 1]
+			rule : ['event', 'Link', 'Social', '{{text}}', 1]
 		}
 	});
 

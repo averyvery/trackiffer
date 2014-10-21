@@ -154,13 +154,13 @@
 				T.bindEvent({rule : []}, $elem);
 				expect($elem.data('events')['click']).toNotEqual(undefined);
 			});
-			it('binds a _gaqpush', function(){
+			it('binds to ga', function(){
 				var $elem = $('<span></span>');
 				T.debugging = false;
-				spyOn(window._gaq, 'push');
-				T.bindEvent(['_trackEvent', 'test', 'test'], $elem, 'span');
+				spyOn(window, 'ga');
+				T.bindEvent(['event', 'test', 'test'], $elem, 'span');
 				$elem.click();
-				expect(window._gaq.push).toHaveBeenCalled();
+				expect(window.ga).toHaveBeenCalled();
 			});
 			it('detects elements without urls', function(){
 				expect(T.elemHasUrl($('<form action="#"></form>'))).toEqual(false);
@@ -243,13 +243,13 @@
 				expect(T.debugging).toEqual(undefined);
 			});
 			it('debugs once GA has loaded', function(){
-				window._gaq = {};
+				window.ga = function(){};
 				spyOn(T, 'debug');
 				T.debugAfterGALoads();
 				expect(T.debug).toHaveBeenCalled();
 			});
 			it('does not debug until GA has loaded', function(){
-				window._gaq = [];
+				window.ga = undefined;
 				spyOn(T, 'debug');
 				T.debugAfterGALoads();
 				expect(T.debug.callCount).toEqual(0);
@@ -289,11 +289,10 @@
 				expect(window.console && window.console.logs).toEqual(undefined);
 			});
 			it('undefine ga when asked', function(){
-				window._gat = 'test';
-				window._gaq = 'test';
+				window.ga = undefined;
 				T.undefineGa();
 				expect(window._gat).toEqual(undefined);
-				expect(typeof window._gaq).toEqual('object');
+				expect(typeof window.ga).toEqual('function');
 			});
 			it('should undefined ga before debug', function(){
 				spyOn(T, 'undefineGa');
