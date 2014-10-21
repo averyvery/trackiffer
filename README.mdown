@@ -100,6 +100,10 @@ If you experience issues, please report them [on the issues page](https://github
 Once you download Trackiffer, you can install the bookmarklet from the index.html page.
 This will drop trackiffer onto any page you view and set debug mode - you can then execute and test trackiffer({rules}) from your browser's console.
 
+## Running the Tests
+
+Simply open `test/index.html` in your browser. Please verify that all tests pass before submitting PRs.
+
 ## Why does this exist?
 
 The Viget marketing people are awesome - when we remake a site, they put event tracking on the OLD site, then track the same actions on the new one when it launches.
