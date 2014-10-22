@@ -39,14 +39,9 @@
 				'select' : 'change'
 			},
 
-			defineGa : function(){
-				window._gaq = window._gaq || [];
-			},
-
 			init : function(){
 				_t.debug_outlines.property = _t.is_oldbrowser ? 'border' : 'outline';
 				_t.checkDebugSetting();
-				_t.defineGa();
 				_t.checkjQuery();
 				_t.debugging && _t.debugAfterGALoads();
 			},
@@ -117,8 +112,11 @@
 
 			formatData : function(event_data, $elem){
 				var method = event_data.shift(),
+					perform_as = _t.determinePerformMethod(method),
 					parsed_event_data = _t.parseTokens(event_data, $elem);
+
 				parsed_event_data.unshift(method);
+				parsed_event_data.unshift(perform_as);
 				return parsed_event_data;
 			},
 
@@ -166,6 +164,17 @@
 					event_data[i] = safe_value;
 				}
 				return event_data;
+			},
+
+			determinePerformMethod : function(method){
+				switch(method) {
+					case 'pageview':
+					case 'event':
+					case 'social':
+						return 'send';
+					default: // all custom variables
+						return 'set';
+				}
 			},
 
 			replaceBadCharacters : function(string){
@@ -298,7 +307,7 @@
 					_t.log(log_message);
 					_t.log('|    parsing ', event_data);
 					_t.log('v    ');
-					window._gaq.push(formatted_event_data);
+					window.ga(formatted_event_data);
 					_t.log('^    ');
 
 					if (event_data.delay && _t.elemHasUrl($target_elem)){
@@ -342,7 +351,7 @@
 
 			debugAfterGALoads : function(){
 				_t.log('|    waiting for GA to load before debugging...');
-				var is_loaded = _gaq !== 'undefined' && _t.isArray(_gaq) === false;
+				var is_loaded = typeof(window.ga) == 'function';
 				if(is_loaded){
 					_t.log('|    GA has loaded');
 					_t.log('');
@@ -366,8 +375,8 @@
 
 			undefineGa : function(){
 				_t.log('|    unsetting existing GA');
-				window._gat = undefined;
-				window._gaq = [['_setAccount', 'UA-00000000-1']];
+				window.ga = function(){};
+				window.ga('create', 'UA-00000000-1');
 			},
 
 			debug : function(){
